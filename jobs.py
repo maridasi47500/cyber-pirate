@@ -16,6 +16,17 @@ class Jobs():
              );")
              print(self.mydb)
         def createmany(self,myid,mylist):
-                        for x in mylist:
-                                            x["user_id"] = myid
-                                                            self.cur.execute("insert into educations (user_id, university, diploma, faculty, department, begin, end) values (:user_id, :university, :diploma, :faculty, :department, :begin, :end)",x)
+            for x in mylist:
+                x["user_id"] = myid
+                self.cur.execute("insert into jobs (user_id, university, city, job, begin, end) values (:user_id, :university, :city, :job, :begin, :end)",x)
+        def updatemany(self,myid,mylist):
+            ids=[myid]
+            myvars=[]
+            for x in mylist:
+                self.cur.execute("update jobs set user_id = :user_id, university = :university, city = :city, begin = :begin, end = :end where id = :id",x)
+                myvars.append("?")
+                ids.append(x["id"])
+            if len(mylist) > 0:
+                self.cur.execute("delete from jobs where user_id = ? and id not in ("+"".join(myvars)+")", ids)
+            else:
+                self.cur.execute("delete from jobs where user_id = ?", ids)
