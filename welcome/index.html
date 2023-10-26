@@ -1,38 +1,73 @@
 <a href="/data_reach">a propos</a>
+<h2>s'inscrire</h2>
+<form method="post">
 <table>
 <tr>
-<td rowspan="10"><img src=""/><br>name</td>
+<td rowspan="10"><img id="mypic" src=""/><br>
+my pic
+<input type="file" name="mypic"/>
+<br>
+name
+<input type="text" name="nomcomplet"/>
+
+</td>
 <td colspan="2">Associate professor   Supervisor of Master's Candidates
 <input type="text" name="metier"/>
 
 </td>
 </tr>
 <tr>
-<td colspan="2">gender</td>
+<td colspan="2">gender
+<input type="text" name="gender"/>
+
+</td>
 </tr>
 <tr>
-<td colspan="2">Alma Mater</td>
+<td colspan="2">Alma Mater
+<input type="text" name="almamater"/>
+
+</td>
 </tr>
 <tr>
-<td colspan="2">Education Level</td>
+<td colspan="2">Education Level
+<input type="text" name="educationlevel"/>
+
+</td>
 </tr>
 <tr>
-<td colspan="2">Degree</td>
+<td colspan="2">Degree
+<input type="text" name="degree"/>
+
+</td>
 </tr>
 <tr>
-<td colspan="2">Status</td>
+<td colspan="2">Status
+<input type="text" name="status"/>
+</td>
 </tr>
 <tr>
-<td colspan="2">School/Department</td>
+<td colspan="2">School/Department
+<input type="text" name="school"/>
+
+</td>
 </tr>
 <tr>
-<td colspan="2">Discipline</td>
+<td colspan="2">Discipline
+<input type="text" name="discipline"/>
+
+</td>
 </tr>
 <tr>
-<td colspan="2">Business Address</td>
+<td colspan="2">Business Address
+<input type="text" name="businessaddress"/>
+
+</td>
 </tr>
 <tr>
-<td colspan="2">Email</td>
+<td colspan="2">Email
+<input type="text" name="email"/>
+
+</td>
 </tr>
 <tr>
 <td colspan="2">background education<br>
@@ -45,10 +80,16 @@ university > Environmental Engineering>              faculty of Higher Instituti
 
 </table>
 </td>
-<td rowspan="4">personal profile</td>
+<td rowspan="4">personal profile
+	<textarea name="profile"></textarea>
+
+</td>
 </tr>
 <tr>
 <td colspan="2">Research Focus
+<button type="button" id="add3" onclick="add3();return false;">add line</button>
+<table id="div3" data-mydata="0">
+	</table>
 </td>
 </tr>
 <tr>
@@ -57,17 +98,20 @@ university > Environmental Engineering>              faculty of Higher Instituti
 <tr>
 <td>
 ZipCode : 
+<input type="text" name="zipcode"/>
 </td>
 </tr>
 
 <tr>
 <td>
 PostalAddress : 
+<input type="text" name="postaladdress"/>
 </td>
 </tr>
 <tr>
 <td>
 email : 
+<input type="text" name="otheremail"/>
 </td>
 </tr>
 <table>
@@ -88,7 +132,19 @@ unieriste（ville）    metier
 </td>
 </tr>
 
+<tr>
+<td>
+	password 
+<input type="password" name="password"/>
+<br>
+	password ocnfirmation
+<input type="password" name="password_confirmation"/>
+<br>
+<input type="submit" name="envoyer" value="envoyer"/>
+</td>
+</tr>
 </table>
+</form>
 <script>
 function add2(){
 var div=document.getElementById("div2");
@@ -102,6 +158,12 @@ var div=document.getElementById("div1");
 
 div.innerHTML+="<tr><td>begin<input name=\"user[educations]["+String(div.dataset.mydata)+"][begin]\" type=\"date\"/></td><td colspan=\"3\">end<input name=\"user[educations]["+String(div.dataset.mydata)+"][end]\" type=\"date\"/></td></tr>";
 div.innerHTML+="<tr><td>university<input name=\"user[educations]["+String(div.dataset.mydata)+"][university]\" type=\"text\"/></td><td>departement<input name=\"user[educations]["+String(div.dataset.mydata)+"][dep]\" type=\"text\"/></td><td>faculty<input name=\"user[educations]["+String(div.dataset.mydata)+"][faculty]\" type=\"text\"/></td><td>diploma<input name=\"user[educations]["+String(div.dataset.mydata)+"][diploma]\" type=\"text\"/></td></tr>";
+div.dataset.mydata=Number(div.dataset.mydata)+1;
+}
+function add3(){
+var div=document.getElementById("div3");
+
+		div.innerHTML+="<tr><td>research focus<textarea name=\"user[researchfocus]["+String(div.dataset.mydata)+"][content]\"></textarea></td></tr>";
 div.dataset.mydata=Number(div.dataset.mydata)+1;
 }
 </script>
