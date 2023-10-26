@@ -1,0 +1,107 @@
+<a href="/data_reach">a propos</a>
+<table>
+<tr>
+<td rowspan="10"><img src=""/><br>name</td>
+<td colspan="2">Associate professor   Supervisor of Master's Candidates
+<input type="text" name="metier"/>
+
+</td>
+</tr>
+<tr>
+<td colspan="2">gender</td>
+</tr>
+<tr>
+<td colspan="2">Alma Mater</td>
+</tr>
+<tr>
+<td colspan="2">Education Level</td>
+</tr>
+<tr>
+<td colspan="2">Degree</td>
+</tr>
+<tr>
+<td colspan="2">Status</td>
+</tr>
+<tr>
+<td colspan="2">School/Department</td>
+</tr>
+<tr>
+<td colspan="2">Discipline</td>
+</tr>
+<tr>
+<td colspan="2">Business Address</td>
+</tr>
+<tr>
+<td colspan="2">Email</td>
+</tr>
+<tr>
+<td colspan="2">background education<br>
+
+2012.9 -- 2016.6
+
+university > Environmental Engineering>              faculty of Higher Institutions    >   Doctoral Degree in Engineering
+<button type="button" id="add1" onclick="add();return false;">add line</button>
+<table id="div1" data-mydata="0">
+
+</table>
+</td>
+<td rowspan="4">personal profile</td>
+</tr>
+<tr>
+<td colspan="2">Research Focus
+</td>
+</tr>
+<tr>
+<td colspan="2">Other Contact Information
+<table>
+<tr>
+<td>
+ZipCode : 
+</td>
+</tr>
+
+<tr>
+<td>
+PostalAddress : 
+</td>
+</tr>
+<tr>
+<td>
+email : 
+</td>
+</tr>
+<table>
+
+</td>
+</tr>
+<tr>
+<td colspan="2">Work Experience
+2019.7 -- maintenant
+
+unieriste（ville）    metier 
+<button type="button" id="add2" onclick="add2();return false;">add line</button>
+<table id="div2" data-mydata="0">
+
+</table>
+
+
+</td>
+</tr>
+
+</table>
+<script>
+function add2(){
+var div=document.getElementById("div2");
+
+div.innerHTML+="<tr><td>begin<input name=\"user[jobs]["+String(div.dataset.mydata)+"][begin]\" type=\"date\"/></td><td colspan=\"3\">end<input name=\"user[jobs]["+String(div.dataset.mydata)+"][end]\" type=\"date\"/></td></tr>";
+div.innerHTML+="<tr><td>university<input name=\"user[jobs]["+String(div.dataset.mydata)+"][university]\" type=\"text\"/></td><td>city<input name=\"user[jobs]["+String(div.dataset.mydata)+"][city]\" type=\"text\"/></td><td>job<input name=\"user[jobs]["+String(div.dataset.mydata)+"][job]\" type=\"text\"/></td></tr>";
+div.dataset.mydata=Number(div.dataset.mydata)+1;
+}
+function add(){
+var div=document.getElementById("div1");
+
+div.innerHTML+="<tr><td>begin<input name=\"user[educations]["+String(div.dataset.mydata)+"][begin]\" type=\"date\"/></td><td colspan=\"3\">end<input name=\"user[educations]["+String(div.dataset.mydata)+"][end]\" type=\"date\"/></td></tr>";
+div.innerHTML+="<tr><td>university<input name=\"user[educations]["+String(div.dataset.mydata)+"][university]\" type=\"text\"/></td><td>departement<input name=\"user[educations]["+String(div.dataset.mydata)+"][dep]\" type=\"text\"/></td><td>faculty<input name=\"user[educations]["+String(div.dataset.mydata)+"][faculty]\" type=\"text\"/></td><td>diploma<input name=\"user[educations]["+String(div.dataset.mydata)+"][diploma]\" type=\"text\"/></td></tr>";
+div.dataset.mydata=Number(div.dataset.mydata)+1;
+}
+</script>
