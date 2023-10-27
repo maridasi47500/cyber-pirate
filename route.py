@@ -7,10 +7,12 @@ class Route():
     def __init__(self):
         self.Program=Directory("mon petit guide de python")
         self.Program.set_path("./")
+        self.user=User()
         self.render_figure=RenderFigure(self.Program)
     def welcome(self,search):
         return self.render_figure.render_figure("welcome/index.html")
     def save_user(self,params={}):
+        self.user=self.user.create(params)
         return self.render_figure.render_figure("welcome/datareach.html")
     def data_reach(self,search):
         return self.render_figure.render_figure("welcome/datareach.html")

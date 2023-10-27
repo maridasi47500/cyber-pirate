@@ -1,6 +1,6 @@
 <a href="/data_reach">a propos</a>
 <h2>s'inscrire</h2>
-<form method="post">
+<form method="post" action="/save_user">
 <table>
 <tr>
 <td rowspan="10"><img id="mypic" src=""/><br>
@@ -87,7 +87,7 @@ university > Environmental Engineering>              faculty of Higher Instituti
 </tr>
 <tr>
 <td colspan="2">Research Focus
-<button type="button" id="add3" onclick="add3();return false;">add line</button>
+<button type="button" id="add3" onclick="addfocus();return false;">add line</button>
 <table id="div3" data-mydata="0">
 	</table>
 </td>
@@ -123,7 +123,7 @@ email :
 2019.7 -- maintenant
 
 unieriste（ville）    metier 
-<button type="button" id="add2" onclick="add2();return false;">add line</button>
+<button type="button" id="add2" onclick="addjob();return false;">add line</button>
 <table id="div2" data-mydata="0">
 
 </table>
@@ -146,12 +146,13 @@ unieriste（ville）    metier
 </table>
 </form>
 <script>
-function add2(){
+function addjob(){
 var div=document.getElementById("div2");
 
 div.innerHTML+="<tr><td>begin<input name=\"user[jobs]["+String(div.dataset.mydata)+"][begin]\" type=\"date\"/></td><td colspan=\"3\">end<input name=\"user[jobs]["+String(div.dataset.mydata)+"][end]\" type=\"date\"/></td></tr>";
 div.innerHTML+="<tr><td>university<input name=\"user[jobs]["+String(div.dataset.mydata)+"][university]\" type=\"text\"/></td><td>city<input name=\"user[jobs]["+String(div.dataset.mydata)+"][city]\" type=\"text\"/></td><td>job<input name=\"user[jobs]["+String(div.dataset.mydata)+"][job]\" type=\"text\"/></td></tr>";
 div.dataset.mydata=Number(div.dataset.mydata)+1;
+return false;
 }
 function add(){
 var div=document.getElementById("div1");
@@ -159,11 +160,13 @@ var div=document.getElementById("div1");
 div.innerHTML+="<tr><td>begin<input name=\"user[educations]["+String(div.dataset.mydata)+"][begin]\" type=\"date\"/></td><td colspan=\"3\">end<input name=\"user[educations]["+String(div.dataset.mydata)+"][end]\" type=\"date\"/></td></tr>";
 div.innerHTML+="<tr><td>university<input name=\"user[educations]["+String(div.dataset.mydata)+"][university]\" type=\"text\"/></td><td>departement<input name=\"user[educations]["+String(div.dataset.mydata)+"][dep]\" type=\"text\"/></td><td>faculty<input name=\"user[educations]["+String(div.dataset.mydata)+"][faculty]\" type=\"text\"/></td><td>diploma<input name=\"user[educations]["+String(div.dataset.mydata)+"][diploma]\" type=\"text\"/></td></tr>";
 div.dataset.mydata=Number(div.dataset.mydata)+1;
-}
-function add3(){
+return false;
+};
+function addfocus(){
 var div=document.getElementById("div3");
 
-		div.innerHTML+="<tr><td>research focus<textarea name=\"user[researchfocus]["+String(div.dataset.mydata)+"][content]\"></textarea></td></tr>";
+div.innerHTML+="<tr><td>research focus<textarea name=\"user[researchfocus]["+String(div.dataset.mydata)+"][content]\"></textarea></td></tr>";
 div.dataset.mydata=Number(div.dataset.mydata)+1;
-}
+return false;
+};
 </script>
