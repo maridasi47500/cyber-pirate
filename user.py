@@ -31,8 +31,13 @@ class User(Model):
                 );""")
         self.con.commit()
         #self.con.close()
+    def getall(self):
+        self.cur.execute("select * from users")
+        
+        row=self.cur.fetchall()
+        return row
     def create(self,params):
-        self.con=sqlite3.connect(self.mydb)
+        #self.con=sqlite3.connect(self.mydb)
         print("ok")
         myhash={}
         myeducations=[]
@@ -70,26 +75,31 @@ class User(Model):
                 cityjob="user[jobs][{myid}][city]".format(myid=thisid)
                 beginjob="user[jobs][{myid}][begin]".format(myid=thisid)
                 endjob="user[jobs][{myid}][begin]".format(myid=thisid)
-                job={"job": params[namejob][0], "end": params[endjob], "begin": params[beginjob], "city": params[cityjob], "university": params[unijob]}
+                job={"job": params[namejob][0], "end": params[endjob][0], "begin": params[beginjob][0], "city": params[cityjob][0], "university": params[unijob][0]}
                 myjobs.append(job)
             if '[' not in x:
                 myhash[x]=params[x][0]
         print(myhash)
         self.cur.execute("insert into users (metier,mypic,nomcomplet,gender, almamater, educationlevel, degree, status, school, discipline, businessaddress, email, profile, zipcode, otheremail, password) values (:metier,:mypic,:nomcomplet,:gender, :almamater, :educationlevel, :degree, :status, :school, :discipline, :businessaddress, :email, :profile, :zipcode, :otheremail, :password)",myhash)
-        self.con.commit()
         
         self.cur.execute("select id from users where password = ? and email = ?", [myhash["password"], myhash["email"]])
         row=self.cur.fetchone()
         
         myid=row["id"]
+        self.con.commit()
         print("my row id", myid)
-        self.con.close()
         educations=Educations().createmany(myid=myid,mylist=myeducations)
         focuss=Researchfocus().createmany(myid=myid,mylist=myfocus)
         jobs=Jobs().createmany(myid=myid,mylist=myjobs)
+        arr=educations+focuss+jobs
+        #print(arr, "my array")
+        for a,b in arr:
+            print(a,b)
+            self.cur.execute(a,b)
+        self.con.commit()
 
     def update(self,params):
-        self.con=sqlite3.connect(self.mydb)
+        #self.con=sqlite3.connect(self.mydb)
         print("ok")
         myhash={}
         myeducations=[]
@@ -130,14 +140,23 @@ class User(Model):
                 cityjob="user[jobs][{myid}][city]".format(myid=thisid)
                 beginjob="user[jobs][{myid}][begin]".format(myid=thisid)
                 idjob="user[{mykey}][{myid}][{myotherkey}]".format(myid=thisid, mykey=mykey, myotherkey="id")
-                job={"id": params[idjob][0],"job": params[namejob][0], "end": params[endjob], "begin": params[beginjob], "city": params[cityjob], "university": params[unijob]}
+                job={"id": params[idjob][0],"job": params[namejob][0], "end": params[endjob][0], "begin": params[beginjob][0], "city": params[cityjob][0], "university": params[unijob][0]}
                 myjobs.append(job)
             if '[' not in x:
                 myhash[x]=params[x][0]
         self.cur.execute("update users set mypic = :mypic,nomcomplet = :nomcomplet,gender = :gender, almamater = :almamater, educationlevel = :educationlevel, degree = :degree, status = :status, school = :school, discipline = :discipline, businessaddress = :businessaddress, email = :email, profile = :profile, zipcode = :zipcode, otheremail = :otheremail, password = :password where id = :id",myhash)
         self.con.commit()
         myid=myhash["id"]
-        educations=Educations().updatemany(myid=myid,mylist=myeducations)
-        researchfocuss=Researchfocus().updatemany(myid=myid,mylist=myfocus)
-        jobs=Jobs().updatemany(myid=myid,mylist=myjobs)
+        educations=Educations()
+        educations=educations.updatemany(myid=myid,mylist=myeducations)
+        researchfocuss=Researchfocus()
+        researchfocuss=researchfocuss.updatemany(myid=myid,mylist=myfocus)
+        jobs=Jobs()
+        jobs=jobs.updatemany(myid=myid,mylist=myjobs)
+        arr=educations+researchfocuss+jobs
+        print(arr, "my array")
+        for a,b in arr:
+            print(a,b)
+            self.cur.execute(a,b)
+            self.con.commit()
         #self.con.close()

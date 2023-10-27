@@ -13,16 +13,25 @@ from route import Route
 from urllib import parse
 
 class S(BaseHTTPRequestHandler):
-    def _set_response(self):
-        self.send_response(200)
-        self.send_header('Content-type', 'text/html')
-        self.end_headers()
+    def _set_response(self,redirect=False):
+        if redirect:
+          self.send_response(301)
+          self.send_header('Status', '301 Redirect')
+          self.send_header('Location', redirect)
+          self.send_header('Content-type', 'text/html;charset=utf-8')
+          self.end_headers()
+        else:
+          self.send_response(200)
+          self.send_header('Content-type', 'text/html')
+          self.end_headers()
 
     def do_GET(self):
         logging.info("GET request,\nPath: %s\nHeaders:\n%s\n", str(self.path), str(self.headers))
         self._set_response()
-        mystr=Route().run(path=str(self.path))
-        self.wfile.write(mystr.encode('utf-8'))
+        myProgram=Route().run(path=str(self.path),params=myparams)
+
+        self._set_response(redirect=myProgram.get_redirect())
+        self.wfile.write(myProgram.get_html().encode('utf-8'))
 
     def do_POST(self):
         content_length = int(self.headers['Content-Length']) # <--- Gets the size of data
@@ -31,10 +40,10 @@ class S(BaseHTTPRequestHandler):
                 str(self.path), str(self.headers), post_data.decode('utf-8'))
         myparams=(parse.parse_qs(post_data.decode('utf-8')))
         logging.info(parse.parse_qs(post_data.decode('utf-8')))
-        mystr=Route().run(path=str(self.path),params=myparams)
+        myProgram=Route().run(path=str(self.path),params=myparams)
 
-        self._set_response()
-        self.wfile.write("POST request for {}".format(self.path).encode('utf-8'))
+        self._set_response(redirect=myProgram.get_redirect())
+        self.wfile.write(myProgram.get_html().encode('utf-8'))
 
 def run(server_class=HTTPServer, handler_class=S, port=8080):
     logging.basicConfig(level=logging.INFO)

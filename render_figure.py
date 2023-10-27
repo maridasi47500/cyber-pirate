@@ -7,9 +7,24 @@ class RenderFigure():
         self.title=program.get_title()
         self.headingone=program.get_title()
         self.body=""
-        
+        self.params={}
+    def set_param(self,x,y):
+        self.params[x]=y
+    def render_collection(self, collection,partial,as):
+        myview=open(os.path.abspath(+"./"+partial),"r").read()
+        mystr=""
+        for x in collection:
+            for j in myview.split("<%="):
+                if "%>" not in j:
+                    mystr+=j
+                    continue
 
-
+                k=j.split("%>")
+                loc={"render_collection": self.render_collection,as: x  "params": self.params}
+                l=exec("myvalue="+k[0], globals(), loc)
+                mystr+=loc["myvalue"]
+                mystr+=k[1]
+        return mystr
     def partie_de_mes_mots(self,balise="",text=""):
         r="<{balise}>{text}</{balise}>"
         s="""

@@ -11,6 +11,9 @@ class Route():
         self.render_figure=RenderFigure(self.Program)
     def welcome(self,search):
         return self.render_figure.render_figure("welcome/index.html")
+    def myusers(self,params={}):
+        self.render_figure.set_param("users",User().getall())
+        return self.render_figure.render_figure("welcome/users.html")
     def save_user(self,params={}):
         self.user=self.user.create(params)
         return self.render_figure.render_figure("welcome/datareach.html")
@@ -24,10 +27,14 @@ class Route():
         if not self.render_figure.partie_de_mes_mots(balise="section",text=self.Program.get_title()):
             self.render_figure.ajouter_a_mes_mots(balise="section",text=self.Program.get_title())
         if path:
-            ROUTES={'/': self.welcome,
+            ROUTES={
+
                     '/save_user':self.save_user,
                     '/data_reach':self.data_reach,
+                    '/welcome':self.myusers,
+                    '/': self.welcome,
                     }
+            REDIRECT={"/save_user": "/welcome"}
             patterns=ROUTES.keys()
             functions=ROUTES.values()
             for pattern,case in zip(patterns,functions):
@@ -35,4 +42,11 @@ class Route():
                x=(re.match(pattern,path))
                print(x)
                if x:
-                   return case(params)
+                   try:
+                       red=REDIRECT[x]
+                       self.Program.set_redirect(redirect=red)
+
+                   except:  
+                       self.Program.set_html(html=case(params))
+                   return self.Program
+
