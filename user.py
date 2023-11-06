@@ -23,6 +23,7 @@ class User(Model):
         school string,
         discipline string,
         businessaddress string,
+        postaladdress string,
         email string,
         profile text,
         zipcode string,
@@ -35,6 +36,23 @@ class User(Model):
         self.cur.execute("select * from users")
         
         row=self.cur.fetchall()
+        return row
+    def getbyid(self,myid):
+        self.cur.execute("select * from users where id = ?",(myid,))
+        
+        row=dict(self.cur.fetchone())
+        print(row["id"], "row id")
+
+        self.cur.execute("select * from educations where user_id = ?",(myid,))
+        educations=self.cur.fetchall()
+        row["educations"]=educations
+
+        self.cur.execute("select * from researchfocus where user_id = ?",(myid,))
+        res=self.cur.fetchall()
+        row["researchfocus"]=res
+        self.cur.execute("select * from jobs where user_id = ?",(myid,))
+        job=self.cur.fetchall()
+        row["jobs"]=job
         return row
     def create(self,params):
         #self.con=sqlite3.connect(self.mydb)
@@ -66,7 +84,7 @@ class User(Model):
                 diploma="user[{mykey}][{myid}][{myotherkey}]".format(myid=thisid,mykey=mykey,myotherkey="diploma")
                 mybegin="user[{mykey}][{myid}][{myotherkey}]".format(myid=thisid,mykey=mykey,myotherkey="begin")
                 myend="user[{mykey}][{myid}][{myotherkey}]".format(myid=thisid,mykey=mykey,myotherkey="end")
-                job={"university": params[uni][0], "end": params[myend][0], "begin": params[mybegin][0], "diploma": params[diploma][0],"faculty": params[faculty][0], "university": params[uni][0], "department": params[department][0]}
+                job={"university": params[uni][0], "end": params[myend][0], "begin": params[mybegin][0], "diploma": params[diploma][0],"faculty": params[faculty][0], "university": params[uni][0], "dep": params[department][0]}
                 myeducations.append(job)
             if '[university]' in x and "[jobs]" in x:
                 thisid=x.split("jobs][")[1].split("]")[0]
@@ -77,10 +95,11 @@ class User(Model):
                 endjob="user[jobs][{myid}][begin]".format(myid=thisid)
                 job={"job": params[namejob][0], "end": params[endjob][0], "begin": params[beginjob][0], "city": params[cityjob][0], "university": params[unijob][0]}
                 myjobs.append(job)
-            if '[' not in x:
+            if '[' not in x and x not in ['routeparams']:
+                print("my params",x,params[x])
                 myhash[x]=params[x][0]
         print(myhash)
-        self.cur.execute("insert into users (metier,mypic,nomcomplet,gender, almamater, educationlevel, degree, status, school, discipline, businessaddress, email, profile, zipcode, otheremail, password) values (:metier,:mypic,:nomcomplet,:gender, :almamater, :educationlevel, :degree, :status, :school, :discipline, :businessaddress, :email, :profile, :zipcode, :otheremail, :password)",myhash)
+        self.cur.execute("insert into users (postaladdress,metier,mypic,nomcomplet,gender, almamater, educationlevel, degree, status, school, discipline, businessaddress, email, profile, zipcode, otheremail, password) values (:postaladdress,:metier,:mypic,:nomcomplet,:gender, :almamater, :educationlevel, :degree, :status, :school, :discipline, :businessaddress, :email, :profile, :zipcode, :otheremail, :password)",myhash)
         
         self.cur.execute("select id from users where password = ? and email = ?", [myhash["password"], myhash["email"]])
         row=self.cur.fetchone()
@@ -124,7 +143,7 @@ class User(Model):
                 thisid=x.split("jobs][")[1].split("]")[0]
                 mykey="educations"
                 uni="user[{mykey}][{myid}][{myotherkey}]".format(myid=thisid,mykey=mykey,myotherkey="university")
-                department="user[{mykey}][{myid}][{myotherkey}]".format(myid=thisid,mykey=mykey,myotherkey="department")
+                department="user[{mykey}][{myid}][{myotherkey}]".format(myid=thisid,mykey=mykey,myotherkey="dep")
                 faculty="user[{mykey}][{myid}][{myotherkey}]".format(myid=thisid,mykey=mykey,myotherkey="faculty")
                 diploma="user[{mykey}][{myid}][{myotherkey}]".format(myid=thisid,mykey=mykey,myotherkey="diploma")
                 mybegin="user[{mykey}][{myid}][{myotherkey}]".format(myid=thisid,mykey=mykey,myotherkey="begin")
@@ -144,7 +163,7 @@ class User(Model):
                 myjobs.append(job)
             if '[' not in x:
                 myhash[x]=params[x][0]
-        self.cur.execute("update users set mypic = :mypic,nomcomplet = :nomcomplet,gender = :gender, almamater = :almamater, educationlevel = :educationlevel, degree = :degree, status = :status, school = :school, discipline = :discipline, businessaddress = :businessaddress, email = :email, profile = :profile, zipcode = :zipcode, otheremail = :otheremail, password = :password where id = :id",myhash)
+        self.cur.execute("update users set postaladdress = :postaladdress,mypic = :mypic,nomcomplet = :nomcomplet,gender = :gender, almamater = :almamater, educationlevel = :educationlevel, degree = :degree, status = :status, school = :school, discipline = :discipline, businessaddress = :businessaddress, email = :email, profile = :profile, zipcode = :zipcode, otheremail = :otheremail, password = :password where id = :id",myhash)
         self.con.commit()
         myid=myhash["id"]
         educations=Educations()

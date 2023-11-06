@@ -1,0 +1,132 @@
+<a href="/data_reach">a propos</a>
+<h2>s'inscrire</h2>
+<table>
+<tr>
+<td rowspan="10"><img id="mypic" src=""/><br>
+my pic
+<%=user['mypic']%>
+<br>
+name
+<%=user['nomcomplet']%>
+
+</td>
+<td colspan="2">Associate professor   Supervisor of Master's Candidates
+<%=user['metier']%>
+
+</td>
+</tr>
+<tr>
+<td colspan="2">gender
+<%=user['gender']%>
+
+
+</td>
+</tr>
+<tr>
+<td colspan="2">Alma Mater
+<%=user['almamater']%>
+
+</td>
+</tr>
+<tr>
+<td colspan="2">Education Level
+<%=user['educationlevel']%>
+
+</td>
+</tr>
+<tr>
+<td colspan="2">Degree
+<%=user['degree']%>
+
+</td>
+</tr>
+<tr>
+<td colspan="2">Status
+<%=user['status']%>
+</td>
+</tr>
+<tr>
+<td colspan="2">School/Department
+<%=user['school']%>
+
+</td>
+</tr>
+<tr>
+<td colspan="2">Discipline
+<%=user['discipline']%>
+
+</td>
+</tr>
+<tr>
+<td colspan="2">Business Address
+<%=user['businessaddress']%>
+
+</td>
+</tr>
+<tr>
+<td colspan="2">Email
+<%=user['email']%>
+
+</td>
+</tr>
+<tr>
+<td colspan="2">background education<br>
+
+<table id="div1" data-mydata="0">
+<%=render_collection(partial="welcome/_educations.html.erb",collection=user["educations"],as_='education')%>
+
+
+</table>
+</td>
+<td rowspan="4">personal profile
+	<%=user['profile']%>
+
+</td>
+</tr>
+<tr>
+<td colspan="2">Research Focus
+<table id="div3" data-mydata="0">
+<%=render_collection(partial="welcome/_researchfocus.html.erb",collection=user["researchfocus"],as_='focus')%>
+	</table>
+</td>
+</tr>
+<tr>
+<td colspan="2">Other Contact Information
+<table>
+<tr>
+<td>
+ZipCode : 
+<%=user['zipcode']%>
+</td>
+</tr>
+
+<tr>
+<td>
+PostalAddress : 
+<%=user["postaladdress"]%>
+</td>
+</tr>
+<tr>
+<td>
+email : 
+<%=user["otheremail"]%>
+</td>
+</tr>
+<table>
+
+</td>
+</tr>
+<tr>
+<td colspan="2">Work Experience
+<table id="div2" data-mydata="0">
+<%=render_collection(partial="welcome/_jobs.html.erb",collection=user["jobs"],as_='job')%>
+
+</table>
+
+
+</td>
+</tr>
+
+<tr>
+</tr>
+</table>

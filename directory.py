@@ -2,7 +2,7 @@ class Directory():
     def __init__(self, title):
         self.title=title
         self.path="./"
-        self.html
+        self.html=""
         self.redirect=False
     def get_html(self):
         return self.html

@@ -2,6 +2,8 @@ from directory import Directory
 from render_figure import RenderFigure
 from user import User
 import re
+import traceback
+import sys
 
 class Route():
     def __init__(self):
@@ -11,11 +13,17 @@ class Route():
         self.render_figure=RenderFigure(self.Program)
     def welcome(self,search):
         return self.render_figure.render_figure("welcome/index.html")
+    def seeuser(self,params={}):
+        getparams=("id",)
+        myparam=dict(zip(getparams,params["routeparams"]))
+        self.render_figure.set_param("user",User().getbyid(myparam["id"]))
+        return self.render_figure.render_figure("welcome/showuser.html")
     def myusers(self,params={}):
         self.render_figure.set_param("users",User().getall())
         return self.render_figure.render_figure("welcome/users.html")
     def save_user(self,params={}):
         self.user=self.user.create(params)
+        self.Program.set_redirect(red="/welcome")
         return self.render_figure.render_figure("welcome/datareach.html")
     def data_reach(self,search):
         return self.render_figure.render_figure("welcome/datareach.html")
@@ -30,6 +38,7 @@ class Route():
             ROUTES={
 
                     '/save_user':self.save_user,
+                    "^/seeuser/([0-9]+)$":self.seeuser,
                     '/data_reach':self.data_reach,
                     '/welcome':self.myusers,
                     '/': self.welcome,
@@ -40,13 +49,15 @@ class Route():
             for pattern,case in zip(patterns,functions):
                print("pattern=",pattern)
                x=(re.match(pattern,path))
-               print(x)
                if x:
-                   try:
-                       red=REDIRECT[x]
-                       self.Program.set_redirect(redirect=red)
+                   params["routeparams"]=x.groups()
 
-                   except:  
-                       self.Program.set_html(html=case(params))
+                   if not self.Program.get_redirect():
+                     try:
+                         self.Program.set_html(html=case(params))
+                     except Exception:  
+                         self.Program.set_html(html="<p>une erreur s'est produite "+str(traceback.format_exc())+"</p><a href=\"/\">retour à l'accueil</a>")
                    return self.Program
+               else:
+                   self.Program.set_html(html="<p>la page n'a pas été trouvée</p><a href=\"/\">retour à l'accueil</a>")
 

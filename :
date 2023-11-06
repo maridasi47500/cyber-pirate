@@ -23,7 +23,7 @@ class Educations(Model):
             print(mylist)
             for x in mylist:
                 x["user_id"] = myid
-                self.arr.append(["insert into educations (user_id, university, diploma, faculty, dep, begin, end) values (:user_id, :university, :diploma, :faculty, :dep, :begin, :end)",x])
+                self.arr.append(["insert into educations (user_id, university, diploma, faculty, department, begin, end) values (:user_id, :university, :diploma, :faculty, :department, :begin, :end)",x])
                 #self.con.commit()
             #self.con.close()
             return self.arr
@@ -34,7 +34,7 @@ class Educations(Model):
             for x in mylist:
                 myvars.append("?")
                 ids.append(x["id"])
-                self.arr.append(["update educations set user_id = :user_id, university = :university, diploma = :diploma, faculty = :faculty, dep = :dep, begin = :begin, end = :end where id = :id",x])
+                self.arr.append(["update educations set user_id = :user_id, university = :university, diploma = :diploma, faculty = :faculty, department = :department, begin = :begin, end = :end where id = :id",x])
                 #self.con.commit()
             if len(mylist) > 0:
                 self.arr.append(["delete from educations where user_id = ? and id not in ("+",".join(myvars)+")", ids])

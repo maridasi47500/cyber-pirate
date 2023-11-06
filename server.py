@@ -11,6 +11,8 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 import logging
 from route import Route
 from urllib import parse
+from urllib.parse import parse_qs, urlparse
+
 
 class S(BaseHTTPRequestHandler):
     def _set_response(self,redirect=False):
@@ -28,6 +30,8 @@ class S(BaseHTTPRequestHandler):
     def do_GET(self):
         logging.info("GET request,\nPath: %s\nHeaders:\n%s\n", str(self.path), str(self.headers))
         self._set_response()
+        myparams = parse_qs(urlparse(self.path).query)
+
         myProgram=Route().run(path=str(self.path),params=myparams)
 
         self._set_response(redirect=myProgram.get_redirect())
@@ -39,6 +43,7 @@ class S(BaseHTTPRequestHandler):
         logging.info("POST request,\nPath: %s\nHeaders:\n%s\n\nBody:\n%s\n",
                 str(self.path), str(self.headers), post_data.decode('utf-8'))
         myparams=(parse.parse_qs(post_data.decode('utf-8')))
+
         logging.info(parse.parse_qs(post_data.decode('utf-8')))
         myProgram=Route().run(path=str(self.path),params=myparams)
 
