@@ -32,6 +32,17 @@ class User(Model):
                 );""")
         self.con.commit()
         #self.con.close()
+    def getbyemailpw(self,email,pw):
+        self.cur.execute("select * from users where otheremail = ? and password = ?",(email,pw,))
+
+        
+        row=self.cur.fetchone()
+        print(dict(row))
+        print(row)
+        if row:
+            return {"notice":"vous êtes connecté","name": row["nomcomplet"],"email": row["otheremail"]}
+        else:
+            return {"notice":None,"name":None,"email": None}
     def getall(self):
         self.cur.execute("select * from users")
         
@@ -101,7 +112,7 @@ class User(Model):
         print(myhash)
         self.cur.execute("insert into users (postaladdress,metier,mypic,nomcomplet,gender, almamater, educationlevel, degree, status, school, discipline, businessaddress, email, profile, zipcode, otheremail, password) values (:postaladdress,:metier,:mypic,:nomcomplet,:gender, :almamater, :educationlevel, :degree, :status, :school, :discipline, :businessaddress, :email, :profile, :zipcode, :otheremail, :password)",myhash)
         
-        self.cur.execute("select id from users where password = ? and email = ?", [myhash["password"], myhash["email"]])
+        self.cur.execute("select id,otheremail,name from users where password = ? and email = ?", [myhash["password"], myhash["email"]])
         row=self.cur.fetchone()
         
         myid=row["id"]
@@ -116,6 +127,8 @@ class User(Model):
             print(a,b)
             self.cur.execute(a,b)
         self.con.commit()
+        return {"notice": "vous avez été inscrit(e)","email": row["otheremail","name":row["nomcomplet"]]}
+
 
     def update(self,params):
         #self.con=sqlite3.connect(self.mydb)
@@ -178,4 +191,4 @@ class User(Model):
             print(a,b)
             self.cur.execute(a,b)
             self.con.commit()
-        #self.con.close()
+        return {"email": row["email"]}

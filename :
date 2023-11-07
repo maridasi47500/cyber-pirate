@@ -1,46 +1,100 @@
-import sqlite3
-import sys
-from model import Model
-class Educations(Model):
-        def __init__(self):
-             #self.con=sqlite3.connect(self.db)
-             #self.cur=self.con.cursor()
-             self.arr=[]
-             self.arr.append(["""create table if not exists educations(
-             id integer primary key autoincrement,
-             user_id integer,
-             university text,
-             diploma text,
-             faculty text,
-             dep text,
-             begin date,
-             end date
+#!/usr/bin/env python3
+"""
+License: MIT License
+Copyright (c) 2023 Miel Donkers
 
-             );""",[]])
-             #self.con.commit()
+Very simple HTTP server in python for logging requests
+Usage::
+    ./server.py [<port>]
+"""
+from http.server import BaseHTTPRequestHandler, HTTPServer
+import logging
+from route import Route
+from urllib import parse
+from urllib.parse import parse_qs, urlparse
+import requests
+req = requests.Session()
+req.cookies["email"]=None
+req.cookies["name"]=None
+req.cookies["notice"]=None
+from urllib.parse import urlencode
 
-        def createmany(self,myid,mylist):
-            print(mylist)
-            for x in mylist:
-                x["user_id"] = myid
-                self.arr.append(["insert into educations (user_id, university, diploma, faculty, department, begin, end) values (:user_id, :university, :diploma, :faculty, :department, :begin, :end)",x])
-                #self.con.commit()
-            #self.con.close()
-            return self.arr
-        def updatemany(self,myid,mylist):
-            #self.con=sqlite3.connect(self.db)
-            ids=[myid]
-            myvars=[]
-            for x in mylist:
-                myvars.append("?")
-                ids.append(x["id"])
-                self.arr.append(["update educations set user_id = :user_id, university = :university, diploma = :diploma, faculty = :faculty, department = :department, begin = :begin, end = :end where id = :id",x])
-                #self.con.commit()
-            if len(mylist) > 0:
-                self.arr.append(["delete from educations where user_id = ? and id not in ("+",".join(myvars)+")", ids])
-                #self.con.commit()
-            else:
-                self.arr.append(["delete from educations where user_id = ?",ids])
-                #self.con.commit()
-            #self.con.close()
-            return self.arr
+
+
+
+class S(BaseHTTPRequestHandler):
+    def _set_response(self,redirect=False,cookies=False):
+        if redirect:
+          self.send_response(301)
+          self.send_header('Status', '301 Redirect')
+          self.send_header('Location', redirect)
+          self.send_header('Content-type', 'text/html;charset=utf-8')
+        else:
+          self.send_response(200)
+          self.send_header('Content-type', 'text/html')
+        if cookies:
+          self.send_header("Cookie", urlencode(cookies))
+        self.end_headers()
+
+    def do_GET(self):
+        logging.info("GET request,\nPath: %s\nHeaders:\n%s\n", str(self.path), str(self.headers))
+        myparams = parse_qs(urlparse(self.path).query)
+
+        myProgram=Route().run(path=str(self.path),params=myparams,session=req.cookies,url=self.path)
+        if myProgram.get_session():
+          xx=myProgram.get_session()["email"]
+          yy=myProgram.get_session()["name"]
+          zz=myProgram.get_session()["notice"]
+          print("1 cookie email",xx)
+          req.cookies["email"]=xx
+          req.cookies["notice"]=zz
+
+          req.cookies["name"]=yy
+        print("cookies dict", dict(req.cookies))
+
+        self._set_response(redirect=myProgram.get_redirect(),cookies=req.cookies)
+        if zz is not None and len(zz) > 0:
+          req.cookies["notice"]=""
+        self.wfile.write(myProgram.get_html().encode('utf-8'))
+
+    def do_POST(self):
+        content_length = int(self.headers['Content-Length']) # <--- Gets the size of data
+        post_data = self.rfile.read(content_length) # <--- Gets the data itself
+        logging.info("POST request,\nPath: %s\nHeaders:\n%s\n\nBody:\n%s\n",
+                str(self.path), str(self.headers), post_data.decode('utf-8'))
+        myparams=(parse.parse_qs(post_data.decode('utf-8')))
+
+        logging.info(parse.parse_qs(post_data.decode('utf-8')))
+        myProgram=Route().run(path=str(self.path),params=myparams,session=req.cookies,url=self.path)
+        if myProgram.get_session():
+          xx=myProgram.get_session()["email"]
+          zz=myProgram.get_session()["notice"]
+          yy=myProgram.get_session()["name"]
+          print("1 cookie email",xx)
+          req.cookies["email"]=xx
+          req.cookies["name"]=yy
+          req.cookies["notice"]=zz
+        print("cookies", req.cookies)
+
+        self._set_response(redirect=myProgram.get_redirect(),cookies=req.cookies)
+        self.wfile.write(myProgram.get_html().encode('utf-8'))
+
+def run(server_class=HTTPServer, handler_class=S, port=8080):
+    logging.basicConfig(level=logging.INFO)
+    server_address = ('', port)
+    httpd = server_class(server_address, handler_class)
+    logging.info('Starting httpd...\n')
+    try:
+        httpd.serve_forever()
+    except KeyboardInterrupt:
+        pass
+    httpd.server_close()
+    logging.info('Stopping httpd...\n')
+
+if __name__ == '__main__':
+    from sys import argv
+
+    if len(argv) == 2:
+        run(port=int(argv[1]))
+    else:
+        run()

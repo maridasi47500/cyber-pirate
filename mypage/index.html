@@ -3,8 +3,15 @@
         <title>mon guide de python</title>
 <header>
 university
+<a href="/">s'inscrire / se connecter</a>
 <a href="/welcome">voir tous les users</a>
+<div>
+	<%="<a href=\"/logout\">se déconnecter</a> " if params['current_user_name'] is not None else ""%>
+	<%="bienvenue "+params['current_user_name'] if params['current_user_name'] is not None else ""%>
+
+</div>
 </header>
+<p id="notice"><%=session["notice"]%></p>
         <h1>{mot}</h1>
         {plusdemots}
         </head>

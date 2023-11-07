@@ -4,12 +4,18 @@ import traceback
 import sys
 class RenderFigure():
     def __init__(self,program):
+        self.session={}
         self.mytemplate="./mypage/index.html"
         self.path=program.get_path()
         self.title=program.get_title()
         self.headingone=program.get_title()
         self.body=""
-        self.params={}
+        self.params={"current_user_email":None,"current_user_name":None}
+    
+    def set_session(self,x):
+        self.session=x
+    def get_session(self,x):
+        return self.session
     def set_param(self,x,y):
         self.params[x]=y
     def render_body(self):
@@ -23,11 +29,12 @@ class RenderFigure():
               k=j.split("%>")
 
 
-              loc={"render_collection": self.render_collection,"params": self.params}
+              loc={"session": self.session,"render_collection": self.render_collection,"params": self.params}
               for n in self.params:
                   loc[n]=self.params[n]
+              print(k[0])
               l=exec("myvalue="+k[0], globals(), loc)
-              mystr+=loc["myvalue"]
+              mystr+=loc["myvalue"] if loc["myvalue"] is not None else ""
               mystr+=k[1]
           return mystr
         except Exception:
@@ -93,4 +100,5 @@ class RenderFigure():
     def render_figure(self,filename):
         
         self.body+=open(os.path.abspath(self.path+"/"+filename),"r").read()
-        return open(os.path.abspath(self.mytemplate),"r").read().format(debutmots=self.title, mot=self.headingone,plusdemots=self.render_body())
+        self.body= open(os.path.abspath(self.mytemplate),"r").read().format(debutmots=self.title, mot=self.headingone,plusdemots=self.body)
+        return self.render_body()

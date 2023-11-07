@@ -12,29 +12,49 @@ import logging
 from route import Route
 from urllib import parse
 from urllib.parse import parse_qs, urlparse
+import requests
+req = requests.Session()
+req.cookies["email"]=None
+req.cookies["name"]=None
+req.cookies["notice"]=None
+from urllib.parse import urlencode
+
+
 
 
 class S(BaseHTTPRequestHandler):
-    def _set_response(self,redirect=False):
+    def _set_response(self,redirect=False,cookies=False):
         if redirect:
           self.send_response(301)
           self.send_header('Status', '301 Redirect')
           self.send_header('Location', redirect)
           self.send_header('Content-type', 'text/html;charset=utf-8')
-          self.end_headers()
         else:
           self.send_response(200)
           self.send_header('Content-type', 'text/html')
-          self.end_headers()
+        if cookies:
+          self.send_header("Cookie", urlencode(cookies))
+        self.end_headers()
 
     def do_GET(self):
         logging.info("GET request,\nPath: %s\nHeaders:\n%s\n", str(self.path), str(self.headers))
-        self._set_response()
         myparams = parse_qs(urlparse(self.path).query)
+        print("mycookis",dict(req.cookies))
+        dictcook=dict(req.cookies)
+        req.cookies["notice"]=""
+        myProgram=Route().run(path=str(self.path),params=myparams,session=dictcook,url=self.path)
+        if myProgram.get_session():
+          xx=myProgram.get_session()["email"]
+          yy=myProgram.get_session()["name"]
+          print("1 cookie email",xx)
+          req.cookies["email"]=xx
 
-        myProgram=Route().run(path=str(self.path),params=myparams)
 
-        self._set_response(redirect=myProgram.get_redirect())
+          req.cookies["name"]=yy
+        print("cookies dict", dict(req.cookies))
+
+        self._set_response(redirect=myProgram.get_redirect(),cookies=req.cookies)
+
         self.wfile.write(myProgram.get_html().encode('utf-8'))
 
     def do_POST(self):
@@ -43,11 +63,20 @@ class S(BaseHTTPRequestHandler):
         logging.info("POST request,\nPath: %s\nHeaders:\n%s\n\nBody:\n%s\n",
                 str(self.path), str(self.headers), post_data.decode('utf-8'))
         myparams=(parse.parse_qs(post_data.decode('utf-8')))
+        dictcook=dict(req.cookies)
+        req.cookies["notice"]=""
 
         logging.info(parse.parse_qs(post_data.decode('utf-8')))
-        myProgram=Route().run(path=str(self.path),params=myparams)
+        myProgram=Route().run(path=str(self.path),params=myparams,session=dictcook,url=self.path)
+        if myProgram.get_session():
+          xx=myProgram.get_session()["email"]
+          yy=myProgram.get_session()["name"]
+          print("1 cookie email",xx)
+          req.cookies["email"]=xx
+          req.cookies["name"]=yy
+        print("cookies", req.cookies)
 
-        self._set_response(redirect=myProgram.get_redirect())
+        self._set_response(redirect=myProgram.get_redirect(),cookies=req.cookies)
         self.wfile.write(myProgram.get_html().encode('utf-8'))
 
 def run(server_class=HTTPServer, handler_class=S, port=8080):
