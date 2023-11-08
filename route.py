@@ -12,19 +12,32 @@ class Route():
         self.mysession={"notice":None,"email":None,"name":None}
         self.dbUsers=User()
         self.render_figure=RenderFigure(self.Program)
+    def set_my_session(self,x):
+          print("set session",x)
+          self.Program.set_my_session(x)
+          self.render_figure.set_session(self.Program.get_session())
+    def set_redirect(self,x):
+
+          self.Program.set_redirect(x)
+          self.render_figure.set_redirect(self.Program.get_redirect())
+    def set_session(self,x):
+          print("set session",x)
+          self.Program.set_session(x)
+          self.render_figure.set_session(self.Program.get_session())
     def logout(self,search):
-        self.Program.set_session({"notice":None,"email":None,"name":None})
-        self.Program.set_redirect("/")
-        return self.render_figure.render_figure("welcome/datareach.html")
+        self.Program.logout()
+        self.set_redirect("/")
+        return self.render_figure.render_redirect()
     def login(self,search):
         self.user=self.dbUsers.getbyemailpw(search["email"][0],search["password"][0])
         print("user trouve", self.user)
         if self.user["email"]:
-          self.Program.set_session(self.user)
-          self.Program.set_redirect("/welcome")
+          self.set_session(self.user)
+          self.set_redirect("/welcome")
         else:
-          self.Program.set_redirect("/")
-        return self.render_figure.render_figure("welcome/datareach.html")
+          self.set_redirect("/")
+        print("session login",self.Program.get_session())
+        return self.render_figure.render_redirect()
     def welcome(self,search):
         return self.render_figure.render_figure("welcome/index.html")
     def seeuser(self,params={}):
@@ -37,25 +50,18 @@ class Route():
         return self.render_figure.render_figure("welcome/users.html")
     def save_user(self,params={}):
         self.user=self.dbUsers.create(params)
-        self.Program.set_session(self.user)
-        self.Program.set_redirect(red="/welcome")
-        return self.render_figure.render_figure("welcome/datareach.html")
+        self.set_session(self.user)
+        self.set_redirect(red="/welcome")
+        return self.render_figure.render_redirect()
     def data_reach(self,search):
         return self.render_figure.render_figure("welcome/datareach.html")
     def run(self,redirect=False,redirect_path=False,path=False,session=False,params={},url=False):
-        print("dict session",dict(session))
         if url:
             print("url : ",url)
             self.Program.set_url(url)
-        if len(session) > 0:
-            sess=session
-        else:
-            sess=self.mysession
-        self.Program.set_session(dict(sess))
-        self.render_figure.set_session(dict(sess))
-        self.render_figure.set_param("current_user_email",dict(sess)["email"])
-        self.render_figure.set_param("current_user_name",dict(sess)["name"])
-
+        self.set_my_session(session)
+        self.render_figure.set_param("current_user_email",self.Program.get_session()["email"])
+        self.render_figure.set_param("current_user_name",self.Program.get_session()["name"])
         if redirect:
             self.redirect=redirect
         if redirect_path:
@@ -64,12 +70,12 @@ class Route():
             self.render_figure.ajouter_a_mes_mots(balise="section",text=self.Program.get_title())
         if path:
             ROUTES={
-
+                    '/logmeout':self.logout,
                     '/save_user':self.save_user,
                     "^/seeuser/([0-9]+)$":self.seeuser,
                     '/data_reach':self.data_reach,
                     '/login':self.login,
-                    '/logout':self.logout,
+
                     '/welcome':self.myusers,
                     '/': self.welcome,
                     }
@@ -81,17 +87,13 @@ class Route():
                x=(re.match(pattern,path))
                if x:
                    params["routeparams"]=x.groups()
-                   if not self.Program.get_redirect():
-                     try:
-                         self.Program.set_html(html=case(params))
-                     except Exception:  
-                         self.Program.set_html(html="<p>une erreur s'est produite "+str(traceback.format_exc())+"</p><a href=\"/\">retour à l'accueil</a>")
-                   if self.Program.get_session():
-                       print("mysession",session)
-                       self.render_figure.set_param("current_user_email",self.Program.get_session()["email"])
+                   #if not self.Program.get_redirect():
+                   try:
+                       self.Program.set_html(html=case(params))
+                   except Exception:  
+                       self.Program.set_html(html="<p>une erreur s'est produite "+str(traceback.format_exc())+"</p><a href=\"/\">retour à l'accueil</a>")
                    self.Program.redirect_if_not_logged_in()
                    return self.Program
                else:
                    self.Program.set_html(html="<p>la page n'a pas été trouvée</p><a href=\"/\">retour à l'accueil</a>")
             return self.Program
-

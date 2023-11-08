@@ -9,12 +9,17 @@ class RenderFigure():
         self.path=program.get_path()
         self.title=program.get_title()
         self.headingone=program.get_title()
+        self.redirect=""
         self.body=""
         self.params={"current_user_email":None,"current_user_name":None}
     
+    def set_redirect(self,x):
+        self.redirect=x
+    def get_redirect(self):
+        return self.redirect
     def set_session(self,x):
         self.session=x
-    def get_session(self,x):
+    def get_session(self):
         return self.session
     def set_param(self,x,y):
         self.params[x]=y
@@ -25,15 +30,14 @@ class RenderFigure():
               if "%>" not in j:
                   mystr+=j
                   continue
-
               k=j.split("%>")
-
-
+              print("my session",self.session)
               loc={"session": self.session,"render_collection": self.render_collection,"params": self.params}
               for n in self.params:
                   loc[n]=self.params[n]
-              print(k[0])
+
               l=exec("myvalue="+k[0], globals(), loc)
+              print(k[0])
               mystr+=loc["myvalue"] if loc["myvalue"] is not None else ""
               mystr+=k[1]
           return mystr
@@ -97,6 +101,10 @@ class RenderFigure():
         r="<{balise}>{text}</{balise}>".format(balise=balise,text=text)
         self.body+=r
 
+    def render_redirect(self):
+        self.body="<a href=\"{url}\">{text}</a>".format(url=self.get_redirect(),text="la page a été redirigée")
+        
+        return self.body
     def render_figure(self,filename):
         
         self.body+=open(os.path.abspath(self.path+"/"+filename),"r").read()

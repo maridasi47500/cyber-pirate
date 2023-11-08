@@ -7,10 +7,34 @@ class Directory():
         self.html=""
         self.url=""
         self.redirect=False
+    def logout(self):
+        for x in ["email","name","notice"]:
+            try:
+                self.session[x]=""
+            except:
+                print("erreur session logout ",x)
+                self.session[x]=""
+        self.session["mysession"]=True
+    def not_notice(self):
+        self.session["notice"]=""
     def get_session(self):
         return self.session
-    def set_session(self,session):
-        self.session=session
+    def set_my_session(self,s):
+        for x in ["email","name","notice"]:
+            try:
+                self.session[x]=s[x]
+            except:
+                print("erreur session ",x)
+                self.session[x]=""
+        self.session["mysession"]=False
+    def set_session(self,s):
+        for x in ["email","name","notice"]:
+            try:
+                self.session[x]=s[x]
+            except:
+                print("erreur session ",x)
+                self.session[x]=""
+        self.session["mysession"]=True
     def get_url(self):
         return self.url
     def set_url(self,url):
@@ -34,7 +58,10 @@ class Directory():
         mysession=self.get_session()
         print("url : : ",self.url)
         print("session : : ",mysession)
+        if not mysession["mysession"]:
+            self.session["notice"]=""
         if (not mysession or (not mysession["email"] and not mysession["name"])) and self.url != "/" and not self.redirect:
+            print("ok not loged in")
             redi="/"
             self.redirect=redi
             self.html="Moved permanently to <a href=\"{url}\">{url}</a>".format(url=redi)

@@ -42,7 +42,7 @@ class User(Model):
         if row:
             return {"notice":"vous êtes connecté","name": row["nomcomplet"],"email": row["otheremail"]}
         else:
-            return {"notice":None,"name":None,"email": None}
+            return {"notice":"","name":"","email": ""}
     def getall(self):
         self.cur.execute("select * from users")
         

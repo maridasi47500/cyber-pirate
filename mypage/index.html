@@ -6,8 +6,9 @@ university
 <a href="/">s'inscrire / se connecter</a>
 <a href="/welcome">voir tous les users</a>
 <div>
-	<%="<a href=\"/logout\">se déconnecter</a> " if params['current_user_name'] is not None else ""%>
-	<%="bienvenue "+params['current_user_name'] if params['current_user_name'] is not None else ""%>
+	<%="<form action=\"/logmeout\" method=\"post\"><input value=\"se deconnecter\" type=\"submit\"/></form>" if session['name'] != "" else ""%>
+
+	<%="bienvenue "+session['name'] if session['name'] != "" else ""%>
 
 </div>
 </header>
