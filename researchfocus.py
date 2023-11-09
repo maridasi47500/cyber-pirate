@@ -27,15 +27,19 @@ class Researchfocus(Model):
             myvars=[]
             arr=[]
             for x in mylist:
-                self.arr.append(["update researchfocus set user_id = :user_id, content = :content where id = :id", x])
-                #self.con.commit()
-                ids.append(x["id"])
-                myvars.append("?")
+                x["user_id"] = myid
+                try:
+                  ids.append(x["id"])
+                  self.arr.append(["update researchfocus set content = :content where id = :id", x])
+                  myvars.append("?")
+                except:
+
+                  self.arr.append(["insert into researchfocus (user_id, content) values (:user_id, :content)",x])
             if len(mylist) > 0:
-                self.arr.append(["delete from researchfocus where user_id = ? and id not in("+",".join(myvars)+")", ids])
+                self.arr.insert(0,["delete from researchfocus where user_id = ? and id not in("+",".join(myvars)+")", ids])
                 #self.con.commit()
             else:
-                self.arr.append(["delete from researchfocus where user_id = ?", ids])
+                self.arr.insert(0,["delete from researchfocus where user_id = ?", ids])
                 #self.con.commit()
 
             #self.con.close()

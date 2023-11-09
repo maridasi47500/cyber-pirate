@@ -40,6 +40,11 @@ class Route():
         return self.render_figure.render_redirect()
     def welcome(self,search):
         return self.render_figure.render_figure("welcome/index.html")
+    def edit_user(self,params={}):
+        getparams=("id",)
+        myparam=dict(zip(getparams,params["routeparams"]))
+        self.render_figure.set_param("user",User().getbyid(myparam["id"]))
+        return self.render_figure.render_figure("welcome/edituser.html")
     def seeuser(self,params={}):
         getparams=("id",)
         myparam=dict(zip(getparams,params["routeparams"]))
@@ -48,11 +53,21 @@ class Route():
     def myusers(self,params={}):
         self.render_figure.set_param("users",User().getall())
         return self.render_figure.render_figure("welcome/users.html")
+    def update_user(self,params={}):
+        getparams=("id",)
+        myparam=dict(zip(getparams,params["routeparams"]))
+        self.user=self.dbUsers.update(params)
+        self.set_session(self.user)
+        self.set_redirect(("/seeuser/"+params["id"][0]))
+        return self.render_figure.render_redirect()
     def save_user(self,params={}):
         self.user=self.dbUsers.create(params)
-        self.set_session(self.user)
-        self.set_redirect(red="/welcome")
-        return self.render_figure.render_redirect()
+        if self.user["email"]:
+          self.set_session(self.user)
+          self.set_redirect("/welcome")
+        else:
+          self.set_redirect("/")
+          return self.render_figure.render_redirect()
     def data_reach(self,search):
         return self.render_figure.render_figure("welcome/datareach.html")
     def run(self,redirect=False,redirect_path=False,path=False,session=False,params={},url=False):
@@ -72,7 +87,9 @@ class Route():
             ROUTES={
                     '/logmeout':self.logout,
                     '/save_user':self.save_user,
+                    '/update_user':self.update_user,
                     "^/seeuser/([0-9]+)$":self.seeuser,
+                    "^/edituser/([0-9]+)$":self.edit_user,
                     '/data_reach':self.data_reach,
                     '/login':self.login,
 

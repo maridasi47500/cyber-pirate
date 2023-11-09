@@ -29,15 +29,22 @@ class Jobs(Model):
             ids=[myid]
             myvars=[]
             for x in mylist:
-                self.arr.append(["update jobs set user_id = :user_id, university = :university, city = :city, begin = :begin, end = :end where id = :id",x])
-                #self.con.commit()
-                myvars.append("?")
-                ids.append(x["id"])
+                x["user_id"] = myid
+                try:
+
+                  ids.append(x["id"])
+                  self.arr.append(["update jobs set user_id = :user_id, university = :university, city = :city, begin = :begin, end = :end where id = :id",x])
+                  #self.con.commit()
+                  myvars.append("?")
+                except:
+
+                  self.arr.append(["insert into jobs (user_id, university, city, job, begin, end) values (:user_id, :university, :city, :job, :begin, :end)",x])
+
             if len(mylist) > 0:
                 self.arr.append(["delete from jobs where user_id = ? and id not in ("+"".join(myvars)+")", ids])
                 #self.con.commit()
             else:
-                self.arr.append(["delete from jobs where user_id = ?", ids])
+                self.arr.append(["delete from jobs where user_id = ?",ids])
                 #self.con.commit()
             return self.arr
             #self.con.close()

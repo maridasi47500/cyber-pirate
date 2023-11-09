@@ -1,0 +1,178 @@
+<a href="/data_reach">a propos</a>
+<h2>edit user</h2>
+<form method="post" action="/update_user/<%=user["id"]%>">
+<input type="hidden" value="<%=user["id"]%>" name="id"/>
+<table>
+<tr>
+<td rowspan="10"><img id="mypic" src=""/><br>
+my pic
+<input type="hidden" value="<%=user["mypic"]%>" name="mypic"/>
+<input type="file" value="<%=user["mypic"]%>" name="mypic" />
+<br>
+name
+<input type="text" name="nomcomplet" value="<%=user["nomcomplet"]%>"/>
+
+</td>
+<td colspan="2">Associate professor   Supervisor of Master's Candidates
+	<input type="text" name="metier" value="<%=user["metier"]%>"/>
+
+</td>
+</tr>
+<tr>
+<td colspan="2">gender
+	<input type="text" name="gender" value="<%=user["gender"]%>"/>
+
+</td>
+</tr>
+<tr>
+<td colspan="2">Alma Mater
+	<input type="text" name="almamater" value="<%=user["almamater"]%>"/>
+
+</td>
+</tr>
+<tr>
+<td colspan="2">Education Level
+	<input type="text" name="educationlevel" value="<%=user["educationlevel"]%>"/>
+
+</td>
+</tr>
+<tr>
+<td colspan="2">Degree
+	<input type="text" name="degree" value="<%=user["degree"]%>"/>
+
+</td>
+</tr>
+<tr>
+<td colspan="2">Status
+<input type="text" name="status" value="<%=user["status"]%>"/>
+</td>
+</tr>
+<tr>
+<td colspan="2">School/Department
+<input type="text" name="school" value="<%=user["school"]%>"/>
+
+</td>
+</tr>
+<tr>
+<td colspan="2">Discipline
+<input type="text" name="discipline" value="<%=user["discipline"]%>"/>
+
+</td>
+</tr>
+<tr>
+<td colspan="2">Business Address
+<input type="text" name="businessaddress" value="<%=user["businessaddress"]%>"/>
+
+</td>
+</tr>
+<tr>
+<td colspan="2">Email
+<input type="text" name="email" value="<%=user["email"]%>"/>
+
+</td>
+</tr>
+<tr>
+<td colspan="2">background education<br>
+
+2012.9 -- 2016.6
+
+university > Environmental Engineering>              faculty of Higher Institutions    >   Doctoral Degree in Engineering
+<button type="button" id="add1" onclick="add();return false;">add line</button>
+<table id="div1" data-mydata="<%=len(user["educations"])%>">
+	<%=render_collection(partial="welcome/_formeducations.html",collection=user["educations"],as_='education')%>
+
+</table>
+</td>
+<td rowspan="4">personal profile
+	<textarea name="profile"><%=user["profile"]%></textarea>
+
+</td>
+</tr>
+<tr>
+<td colspan="2">Research Focus
+<button type="button" id="add3" onclick="addfocus();return false;">add line</button>
+<table id="div3" data-mydata="<%=len(user["researchfocus"])%>">
+	<%=render_collection(partial="welcome/_formresearchfocus.html",collection=user["researchfocus"],as_='focus')%>
+	</table>
+</td>
+</tr>
+<tr>
+<td colspan="2">Other Contact Information
+<table>
+<tr>
+<td>
+ZipCode : 
+<input type="text" name="zipcode" value="<%=user["zipcode"]%>"/>
+</td>
+</tr>
+
+<tr>
+<td>
+PostalAddress : 
+<input type="text" name="postaladdress" value="<%=user["postaladdress"]%>"/>
+</td>
+</tr>
+<tr>
+<td>
+email : 
+<input type="text" name="otheremail" value="<%=user["otheremail"]%>"/>
+</td>
+</tr>
+<table>
+
+</td>
+</tr>
+<tr>
+<td colspan="2">Work Experience
+2019.7 -- maintenant
+
+unieriste（ville）    metier 
+<button type="button" id="add2" onclick="addjob();return false;">add line</button>
+<table id="div2" data-mydata="<%=len(user["jobs"])%>">
+
+	<%=render_collection(partial="welcome/_formjobs.html",collection=user["jobs"],as_='job')%>
+
+</table>
+
+
+</td>
+</tr>
+
+<tr>
+<td>
+	password 
+<input type="password" name="password" value=""/>
+<br>
+	password ocnfirmation
+<input type="password" name="password_confirmation" value=""/>
+<br>
+<input type="submit" name="envoyer" value="envoyer"/>
+</td>
+</tr>
+</table>
+</form>
+<script>
+function addjob(){
+var div=document.getElementById("div2");
+
+div.innerHTML+="<tr><td>begin<input name=\"user[jobs]["+String(div.dataset.mydata)+"][begin]\" type=\"date\"/></td><td colspan=\"3\">end<input name=\"user[jobs]["+String(div.dataset.mydata)+"][end]\" type=\"date\"/></td></tr>";
+div.innerHTML+="<tr><td>university<input name=\"user[jobs]["+String(div.dataset.mydata)+"][university]\" type=\"text\"/></td><td>city<input name=\"user[jobs]["+String(div.dataset.mydata)+"][city]\" type=\"text\"/></td><td>job<input name=\"user[jobs]["+String(div.dataset.mydata)+"][job]\" type=\"text\"/></td></tr>";
+div.dataset.mydata=Number(div.dataset.mydata)+1;
+return false;
+}
+function add(){
+var div=document.getElementById("div1");
+
+div.innerHTML+="<tr><td>begin<input name=\"user[educations]["+String(div.dataset.mydata)+"][begin]\" type=\"date\"/></td><td colspan=\"3\">end<input name=\"user[educations]["+String(div.dataset.mydata)+"][end]\" type=\"date\"/></td></tr>";
+div.innerHTML+="<tr><td>university<input name=\"user[educations]["+String(div.dataset.mydata)+"][university]\" type=\"text\"/></td><td>departement<input name=\"user[educations]["+String(div.dataset.mydata)+"][dep]\" type=\"text\"/></td><td>faculty<input name=\"user[educations]["+String(div.dataset.mydata)+"][faculty]\" type=\"text\"/></td><td>diploma<input name=\"user[educations]["+String(div.dataset.mydata)+"][diploma]\" type=\"text\"/></td></tr>";
+div.dataset.mydata=Number(div.dataset.mydata)+1;
+return false;
+};
+function addfocus(){
+var div=document.getElementById("div3");
+
+div.innerHTML+="<tr><td>research focus<textarea name=\"user[researchfocus]["+String(div.dataset.mydata)+"][content]\"></textarea></td></tr>";
+div.dataset.mydata=Number(div.dataset.mydata)+1;
+return false;
+};
+</script>

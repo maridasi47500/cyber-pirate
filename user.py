@@ -28,7 +28,7 @@ class User(Model):
         profile text,
         zipcode string,
         otheremail string,
-        password string
+        password string not null
                 );""")
         self.con.commit()
         #self.con.close()
@@ -110,13 +110,17 @@ class User(Model):
                 print("my params",x,params[x])
                 myhash[x]=params[x][0]
         print(myhash)
-        self.cur.execute("insert into users (postaladdress,metier,mypic,nomcomplet,gender, almamater, educationlevel, degree, status, school, discipline, businessaddress, email, profile, zipcode, otheremail, password) values (:postaladdress,:metier,:mypic,:nomcomplet,:gender, :almamater, :educationlevel, :degree, :status, :school, :discipline, :businessaddress, :email, :profile, :zipcode, :otheremail, :password)",myhash)
+        try:
+          self.cur.execute("insert into users (postaladdress,metier,mypic,nomcomplet,gender, almamater, educationlevel, degree, status, school, discipline, businessaddress, email, profile, zipcode, otheremail, password) values (:postaladdress,:metier,:mypic,:nomcomplet,:gender, :almamater, :educationlevel, :degree, :status, :school, :discipline, :businessaddress, :email, :profile, :zipcode, :otheremail, :password)",myhash)
+          self.con.commit()
+        except Exception as e:
+          print("my error"+str(e))
         
-        self.cur.execute("select id,otheremail,name from users where password = ? and email = ?", [myhash["password"], myhash["email"]])
+        self.cur.execute("select id,otheremail,nomcomplet from users where password = ? and otheremail = ?", (myhash["password"], myhash["otheremail"]))
         row=self.cur.fetchone()
         
         myid=row["id"]
-        self.con.commit()
+
         print("my row id", myid)
         educations=Educations().createmany(myid=myid,mylist=myeducations)
         focuss=Researchfocus().createmany(myid=myid,mylist=myfocus)
@@ -127,7 +131,7 @@ class User(Model):
             print(a,b)
             self.cur.execute(a,b)
         self.con.commit()
-        return {"notice": "vous avez été inscrit(e)","email": row["otheremail","name":row["nomcomplet"]]}
+        return {"notice": "vous avez été inscrit(e)","email": row["otheremail"],"name":row["nomcomplet"]}
 
 
     def update(self,params):
@@ -145,15 +149,18 @@ class User(Model):
                 continue
             if 'confirmation' in x:
                 continue
-            if '[id]' in x and "focus" in x:
-                thisid=x.split("jobs][")[1].split("]")[0]
+            if '[content]' in x and "focus" in x:
+                thisid=x.split("focus][")[1].split("]")[0]
                 mykey="researchfocus"
                 focus_id="user[{mykey}][{myid}][{myotherkey}]".format(myid=thisid,mykey=mykey,myotherkey="id")
                 content="user[{mykey}][{myid}][{myotherkey}]".format(myid=thisid,mykey=mykey,myotherkey="content")
-                job={"content": params[content][0], "id": params[focus_id][0]}
+                try:
+                  job={"content": params[content][0], "id": params[focus_id][0]}
+                except:
+                  job={"content": params[content][0]}
                 myfocus.append(job)
-            if '[id]' in x and "[educations]" in x:
-                thisid=x.split("jobs][")[1].split("]")[0]
+            if '[university]' in x and "[educations]" in x:
+                thisid=x.split("educations][")[1].split("]")[0]
                 mykey="educations"
                 uni="user[{mykey}][{myid}][{myotherkey}]".format(myid=thisid,mykey=mykey,myotherkey="university")
                 department="user[{mykey}][{myid}][{myotherkey}]".format(myid=thisid,mykey=mykey,myotherkey="dep")
@@ -162,22 +169,35 @@ class User(Model):
                 mybegin="user[{mykey}][{myid}][{myotherkey}]".format(myid=thisid,mykey=mykey,myotherkey="begin")
                 myend="user[{mykey}][{myid}][{myotherkey}]".format(myid=thisid,mykey=mykey,myotherkey="end")
                 job_id="user[{mykey}][{myid}][{myotherkey}]".format(myid=thisid,mykey=mykey,myotherkey="id")
-                job={"id": params[job_id][0],"university": params[uni][0], "end": params[myend][0], "begin": params[mybegin][0], "diploma": params[diploma][0],"faculty": params[faculty][0], "university": params[school][0]}
+                try:
+                  job={"id": params[job_id][0],"university": params[uni][0], "end": params[myend][0], "begin": params[mybegin][0], "diploma": params[diploma][0],"faculty": params[faculty][0], "dep": params[department][0]}
+                except:
+                  job={"university": params[uni][0], "end": params[myend][0], "begin": params[mybegin][0], "diploma": params[diploma][0],"faculty": params[faculty][0], "dep": params[department][0]}
                 myeducations.append(job)
-            if '[id]' in x and "[jobs]" in x:
+            if '[city]' in x and "[jobs]" in x:
                 mykey="jobs"
                 thisid=x.split("jobs][")[1].split("]")[0]
                 namejob="user[jobs][{myid}][job]".format(myid=thisid)
                 unijob="user[jobs][{myid}][university]".format(myid=thisid)
                 cityjob="user[jobs][{myid}][city]".format(myid=thisid)
                 beginjob="user[jobs][{myid}][begin]".format(myid=thisid)
+                endjob="user[jobs][{myid}][end]".format(myid=thisid)
                 idjob="user[{mykey}][{myid}][{myotherkey}]".format(myid=thisid, mykey=mykey, myotherkey="id")
-                job={"id": params[idjob][0],"job": params[namejob][0], "end": params[endjob][0], "begin": params[beginjob][0], "city": params[cityjob][0], "university": params[unijob][0]}
+                try:
+                  job={"id": params[idjob][0],"job": params[namejob][0], "end": params[endjob][0], "begin": params[beginjob][0], "city": params[cityjob][0], "university": params[unijob][0]}
+                except:
+                  job={"job": params[namejob][0], "end": params[endjob][0], "begin": params[beginjob][0], "city": params[cityjob][0], "university": params[unijob][0]}
                 myjobs.append(job)
-            if '[' not in x:
+            if '[' not in x and x not in ['routeparams']:
+                print(x)
+
+                print(params[x])
                 myhash[x]=params[x][0]
-        self.cur.execute("update users set postaladdress = :postaladdress,mypic = :mypic,nomcomplet = :nomcomplet,gender = :gender, almamater = :almamater, educationlevel = :educationlevel, degree = :degree, status = :status, school = :school, discipline = :discipline, businessaddress = :businessaddress, email = :email, profile = :profile, zipcode = :zipcode, otheremail = :otheremail, password = :password where id = :id",myhash)
-        self.con.commit()
+        try:
+          self.cur.execute("update users set postaladdress = :postaladdress,mypic = :mypic,nomcomplet = :nomcomplet,gender = :gender, almamater = :almamater, educationlevel = :educationlevel, degree = :degree, status = :status, school = :school, discipline = :discipline, businessaddress = :businessaddress, email = :email, profile = :profile, zipcode = :zipcode, otheremail = :otheremail, password = :password where id = :id",myhash)
+          self.con.commit()
+        except Exception as e:
+          print("my error update"+str(e))
         myid=myhash["id"]
         educations=Educations()
         educations=educations.updatemany(myid=myid,mylist=myeducations)
@@ -186,9 +206,11 @@ class User(Model):
         jobs=Jobs()
         jobs=jobs.updatemany(myid=myid,mylist=myjobs)
         arr=educations+researchfocuss+jobs
-        print(arr, "my array")
+        #print(arr, "my array")
         for a,b in arr:
-            print(a,b)
+            print("my sql:",a,b)
             self.cur.execute(a,b)
             self.con.commit()
-        return {"email": row["email"]}
+        self.cur.execute("select id,otheremail,nomcomplet from users where id = ?", (myid,))
+        row=self.cur.fetchone()
+        return {"notice": "vos infos ont été modifiées","email": row["otheremail"],"name":row["nomcomplet"]}

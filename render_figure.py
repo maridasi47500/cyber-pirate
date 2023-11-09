@@ -38,7 +38,7 @@ class RenderFigure():
 
               l=exec("myvalue="+k[0], globals(), loc)
               print(k[0])
-              mystr+=loc["myvalue"] if loc["myvalue"] is not None else ""
+              mystr+=str(loc["myvalue"]) if loc["myvalue"] is not None else ""
               mystr+=k[1]
           return mystr
         except Exception:
@@ -48,6 +48,7 @@ class RenderFigure():
     def render_collection(self, collection,partial,as_):
         myview=open(os.path.abspath("./"+partial),"r").read()
         mystr=""
+        i=0
         for x in collection:
             for j in myview.split("<%="):
                 if "%>" not in j:
@@ -55,11 +56,12 @@ class RenderFigure():
                     continue
 
                 k=j.split("%>")
-                loc={as_: x,  "params": self.params}
+                loc={as_: x,"index":i,  "params": self.params}
                 print(k[0], "content render")
                 l=exec("myvalue="+k[0], globals(), loc)
                 mystr+=str(loc["myvalue"])
                 mystr+=k[1]
+            i+=1
         return mystr
     def partie_de_mes_mots(self,balise="",text=""):
         r="<{balise}>{text}</{balise}>"

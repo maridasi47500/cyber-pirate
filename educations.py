@@ -31,16 +31,21 @@ class Educations(Model):
             #self.con=sqlite3.connect(self.db)
             ids=[myid]
             myvars=[]
-            for x in mylist:
-                myvars.append("?")
-                ids.append(x["id"])
-                self.arr.append(["update educations set user_id = :user_id, university = :university, diploma = :diploma, faculty = :faculty, dep = :dep, begin = :begin, end = :end where id = :id",x])
+
                 #self.con.commit()
+            for x in mylist:
+                x["user_id"] = myid
+
+                try:
+                  ids.append(x["id"])
+                  myvars.append("?")
+                  self.arr.append(["update educations set user_id = :user_id, university = :university, diploma = :diploma, faculty = :faculty, dep = :dep, begin = :begin, end = :end where id = :id",x])
+                except:
+
+                  self.arr.append(["insert into educations (user_id, university, diploma, faculty, dep, begin, end) values (:user_id, :university, :diploma, :faculty, :dep, :begin, :end)",x])
             if len(mylist) > 0:
-                self.arr.append(["delete from educations where user_id = ? and id not in ("+",".join(myvars)+")", ids])
+                self.arr.insert(0,["delete from educations where user_id = ? and id not in ("+",".join(myvars)+")", ids])
                 #self.con.commit()
             else:
-                self.arr.append(["delete from educations where user_id = ?",ids])
-                #self.con.commit()
-            #self.con.close()
+                self.arr.insert(0,["delete from educations where user_id = ?",ids])
             return self.arr
