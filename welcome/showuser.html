@@ -1,5 +1,7 @@
 <a href="/data_reach">a propos</a>
-<h2>s'inscrire</h2>
+<h2><%=user['nomcomplet']%></h2>
+<p><a href="/edituser/<%=user['id']%>">edit user</a></p>
+<p><form method="post" action="/deleteuser/<%=user['id']%>" onsubmit="return confirm('ê tes vous sûr-e de de vouloir supprimer <%=user['nomcomplet']%> ?');"> <input type="submit" name="submit" value="delete user"/></form></p>
 <table>
 <tr>
 <td rowspan="10"><img id="mypic" src=""/><br>

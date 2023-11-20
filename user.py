@@ -48,6 +48,19 @@ class User(Model):
         
         row=self.cur.fetchall()
         return row
+    def deletebyid(self,myid):
+        self.cur.execute("delete from users where id = ?",(myid,))
+        
+
+        self.cur.execute("delete from educations where user_id = ?",(myid,))
+        educations=self.cur.fetchall()
+
+        self.cur.execute("delete from researchfocus where user_id = ?",(myid,))
+        res=self.cur.fetchall()
+        self.cur.execute("delete from jobs where user_id = ?",(myid,))
+        job=self.cur.fetchall()
+        self.con.commit()
+        return None
     def getbyid(self,myid):
         self.cur.execute("select * from users where id = ?",(myid,))
         
@@ -63,6 +76,7 @@ class User(Model):
         row["researchfocus"]=res
         self.cur.execute("select * from jobs where user_id = ?",(myid,))
         job=self.cur.fetchall()
+
         row["jobs"]=job
         return row
     def create(self,params):

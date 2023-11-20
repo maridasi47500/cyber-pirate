@@ -1,4 +1,4 @@
-<tr><td>begin
+<tr class="jobfield<%=index%>"><td>begin
 		<input type="hidden" value="<%=job["id"]%>" name="user[jobs][<%=index%>][id]"/>
 		<input type="text" value="<%=job["begin"]%>" name="user[jobs][<%=index%>][begin]"/>
 
@@ -6,7 +6,7 @@
 		<%=job["end"]%>
 		<input type="text" value="<%=job["end"]%>" name="user[jobs][<%=index%>][end]"/>
 
-	</td></tr><tr><td>university
+	</td></tr><tr class="jobfield<%=index%>"><td>university
 		<input type="text" value="<%=job["university"]%>" name="user[jobs][<%=index%>][university]"/>
 		</td><td>city
 			<%=job["city"]%>
@@ -16,4 +16,4 @@
 		<input type="text" value="<%=job["job"]%>" name="user[jobs][<%=index%>][job]"/>
 
 
-		</td></tr>
+		</td><td><span onclick="$('.jobfield<%=index%>').remove();">delete X</span></td></tr>

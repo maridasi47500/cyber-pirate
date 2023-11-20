@@ -1,4 +1,4 @@
-<tr><td>
+<tr class="educationfield<%=index%>"><td>
 		<input type="hidden" name="user[educations][<%=index%>]{id]" value="<%=education["id"]%>"/>
 	</td></tr>
 <tr><td>begin   
@@ -7,7 +7,7 @@
 	</td><td colspan=\"3\">end
 		<input type="text" name="user[educations][<%=index%>]{end]" value="<%=education["end"]%>"/>
 
-	</td></tr><tr><td>university
+	</td></tr><tr class="educationfield<%=index%>"><td>university
 		<input type="text" name="user[educations][<%=index%>]{university]" value="<%=education["university"]%>"/>
 
 
@@ -22,4 +22,4 @@
 
 		<input type="text" name="user[educations][<%=index%>]{diploma]" value="<%=education["diploma"]%>"/>
 
-		</td></tr>
+		</td><td><span onclick="$('.educationfield<%=index%>').remove();">delete X</span></td></tr>

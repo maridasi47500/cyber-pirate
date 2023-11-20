@@ -154,24 +154,23 @@ unieriste（ville）    metier
 <script>
 function addjob(){
 var div=document.getElementById("div2");
-
-div.innerHTML+="<tr><td>begin<input name=\"user[jobs]["+String(div.dataset.mydata)+"][begin]\" type=\"date\"/></td><td colspan=\"3\">end<input name=\"user[jobs]["+String(div.dataset.mydata)+"][end]\" type=\"date\"/></td></tr>";
-div.innerHTML+="<tr><td>university<input name=\"user[jobs]["+String(div.dataset.mydata)+"][university]\" type=\"text\"/></td><td>city<input name=\"user[jobs]["+String(div.dataset.mydata)+"][city]\" type=\"text\"/></td><td>job<input name=\"user[jobs]["+String(div.dataset.mydata)+"][job]\" type=\"text\"/></td></tr>";
+div.innerHTML+="<tr class=\"tablejobs"+String(div.dataset.mydata)+"\"><td>begin<input name=\"user[jobs]["+String(div.dataset.mydata)+"][begin]\" type=\"date\"/></td><td colspan=\"3\">end<input name=\"user[jobs]["+String(div.dataset.mydata)+"][end]\" type=\"date\"/></td></tr>";
+div.innerHTML+="<tr class=\"tablejobs"+String(div.dataset.mydata)+"\"><td>university<input name=\"user[jobs]["+String(div.dataset.mydata)+"][university]\" type=\"text\"/></td><td>city<input name=\"user[jobs]["+String(div.dataset.mydata)+"][city]\" type=\"text\"/></td><td>job<input name=\"user[jobs]["+String(div.dataset.mydata)+"][job]\" type=\"text\"/></td><td><span onclick=\"$('.tablejobs"+String(div.dataset.mydata)+"').remove();\">supprimer X</span></td></tr>";
 div.dataset.mydata=Number(div.dataset.mydata)+1;
 return false;
 }
 function add(){
 var div=document.getElementById("div1");
 
-div.innerHTML+="<tr><td>begin<input name=\"user[educations]["+String(div.dataset.mydata)+"][begin]\" type=\"date\"/></td><td colspan=\"3\">end<input name=\"user[educations]["+String(div.dataset.mydata)+"][end]\" type=\"date\"/></td></tr>";
-div.innerHTML+="<tr><td>university<input name=\"user[educations]["+String(div.dataset.mydata)+"][university]\" type=\"text\"/></td><td>departement<input name=\"user[educations]["+String(div.dataset.mydata)+"][dep]\" type=\"text\"/></td><td>faculty<input name=\"user[educations]["+String(div.dataset.mydata)+"][faculty]\" type=\"text\"/></td><td>diploma<input name=\"user[educations]["+String(div.dataset.mydata)+"][diploma]\" type=\"text\"/></td></tr>";
+div.innerHTML+="<tr class=\"tableeducation"+String(div.dataset.mydata)+"\"><td>begin<input name=\"user[educations]["+String(div.dataset.mydata)+"][begin]\" type=\"date\"/></td><td colspan=\"3\">end<input name=\"user[educations]["+String(div.dataset.mydata)+"][end]\" type=\"date\"/></td></tr>";
+		div.innerHTML+="<tr class=\"tableeducation"+String(div.dataset.mydata)+"\"><td>university<input name=\"user[educations]["+String(div.dataset.mydata)+"][university]\" type=\"text\"/></td><td>departement<input name=\"user[educations]["+String(div.dataset.mydata)+"][dep]\" type=\"text\"/></td><td>faculty<input name=\"user[educations]["+String(div.dataset.mydata)+"][faculty]\" type=\"text\"/></td><td>diploma<input name=\"user[educations]["+String(div.dataset.mydata)+"][diploma]\" type=\"text\"/></td><td><span onclick=\"$('.tableeducation"+String(div.dataset.mydata)+"').remove();\">supprimer X</span></td></tr>";
 div.dataset.mydata=Number(div.dataset.mydata)+1;
 return false;
 };
 function addfocus(){
 var div=document.getElementById("div3");
 
-div.innerHTML+="<tr><td>research focus<textarea name=\"user[researchfocus]["+String(div.dataset.mydata)+"][content]\"></textarea></td></tr>";
+div.innerHTML+="<tr class=\"tablefocus"+String(div.dataset.mydata)+"\"><td>research focus<textarea name=\"user[researchfocus]["+String(div.dataset.mydata)+"][content]\"></textarea></td><td><span onclick=\"$('.tablefocus"+String(div.dataset.mydata)+"').remove();\">supprimer X</span></td></tr>";
 div.dataset.mydata=Number(div.dataset.mydata)+1;
 return false;
 };

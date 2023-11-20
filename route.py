@@ -40,6 +40,12 @@ class Route():
         return self.render_figure.render_redirect()
     def welcome(self,search):
         return self.render_figure.render_figure("welcome/index.html")
+    def delete_user(self,params={}):
+        getparams=("id",)
+        myparam=dict(zip(getparams,params["routeparams"]))
+        self.render_figure.set_param("user",User().deletebyid(myparam["id"]))
+        self.set_redirect("/welcome")
+        return self.render_figure.render_redirect()
     def edit_user(self,params={}):
         getparams=("id",)
         myparam=dict(zip(getparams,params["routeparams"]))
@@ -90,6 +96,7 @@ class Route():
                     '/update_user':self.update_user,
                     "^/seeuser/([0-9]+)$":self.seeuser,
                     "^/edituser/([0-9]+)$":self.edit_user,
+                    "^/deleteuser/([0-9]+)$":self.delete_user,
                     '/data_reach':self.data_reach,
                     '/login':self.login,
 
