@@ -3,7 +3,6 @@ from render_figure import RenderFigure
 from user import User
 from news import News
 from mypic import Pic
-from javascript import Js
 import re
 import traceback
 import sys
@@ -16,7 +15,6 @@ class Route():
         self.dbUsers=User()
         self.dbNews=News()
         self.render_figure=RenderFigure(self.Program)
-        self.getparams=("id",)
     def set_my_session(self,x):
           print("set session",x)
           self.Program.set_my_session(x)
@@ -61,21 +59,23 @@ class Route():
         return self.render_figure.render_figure("welcome/index.html")
     def delete_user(self,params={}):
         getparams=("id",)
-        myparam=self.post_data(self.getparams)
+        myparam=dict(zip(getparams,params["routeparams"]))
         self.render_figure.set_param("user",User().deletebyid(myparam["id"]))
         self.set_redirect("/welcome")
         return self.render_figure.render_redirect()
     def edit_user(self,params={}):
         getparams=("id",)
-        myparam=self.post_data(getparams)
+        myparam=dict(zip(getparams,params["routeparams"]))
         self.render_figure.set_param("user",User().getbyid(myparam["id"]))
         return self.render_figure.render_figure("welcome/edituser.html")
     def seenew(self,params={}):
-        myparam=self.post_data(self.getparams)
+        getparams=("id",)
+        myparam=dict(zip(getparams,params["routeparams"]))
         self.render_figure.set_param("news",News().getbyid(myparam["id"]))
         return self.render_figure.render_figure("news/shownews.html")
     def seeuser(self,params={}):
-        myparam=self.post_data(self.getparams)
+        getparams=("id",)
+        myparam=dict(zip(getparams,params["routeparams"]))
         self.render_figure.set_param("user",User().getbyid(myparam["id"]))
         return self.render_figure.render_figure("welcome/showuser.html")
     def mynews(self,params={}):
@@ -84,25 +84,18 @@ class Route():
     def myusers(self,params={}):
         self.render_figure.set_param("users",User().getall())
         return self.render_figure.render_figure("welcome/users.html")
-    def set_post_data(self,x):
-        self.post_data=x
-    def get_post_data(self):
-        return self.post_data
     def update_user(self,params={}):
-        myparam=self.post_data(self.getparams)
+        getparams=("id",)
+        myparam=dict(zip(getparams,params["routeparams"]))
         self.user=self.dbUsers.update(params)
         self.set_session(self.user)
         self.set_redirect(("/seeuser/"+params["id"][0]))
         return self.render_figure.render_redirect()
     def save_user(self,params={}):
-        print("My  f unc",self.post_data)
-        myparam=self.get_post_data()(params=("email", "mypic","postaladdress","nomcomplet"))
-        print("My p  a r a m",myparam)
-        self.user=self.dbUsers.create(myparam)
+        self.user=self.dbUsers.create(params)
         if self.user["email"]:
           self.set_session(self.user)
           self.set_redirect("/welcome")
-          return self.render_figure.render_redirect()
         else:
           self.set_redirect("/")
           return self.render_figure.render_redirect()
@@ -110,11 +103,15 @@ class Route():
         return self.render_figure.render_figure("welcome/datareach.html")
     def run(self,redirect=False,redirect_path=False,path=False,session=False,params={},url=False,post_data=False):
         if post_data:
-            self.set_post_data(post_data)
+            for x in post_data:
+                print("Post data",x)
+                params[x] = post_data[x]
         if url:
             print("url : ",url)
             self.Program.set_url(url)
         self.set_my_session(session)
+        self.render_figure.set_param("current_user_email",self.Program.get_session()["email"])
+        self.render_figure.set_param("current_user_name",self.Program.get_session()["name"])
         if redirect:
             self.redirect=redirect
         if redirect_path:
@@ -124,8 +121,6 @@ class Route():
         if path and path.endswith("jpg"):
             self.Program=Pic(path)
             self.Program.set_path("./")
-        elif path and path.endswith(".js"):
-            self.Program=Js(path)
         elif path:
             print("link route ",path)
             ROUTES={
@@ -165,4 +160,4 @@ class Route():
                    return self.Program
                else:
                    self.Program.set_html(html="<p>la page n'a pas été trouvée</p><a href=\"/\">retour à l'accueil</a>")
-        return self.Program
+            return self.Program

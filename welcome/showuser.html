@@ -12,7 +12,7 @@ name
 <%=user['nomcomplet']%>
 
 </td>
-<td colspan="2">Associate professor   Supervisor of Master's Candidates
+<td colspan="2">MEtier
 <%=user['metier']%>
 
 </td>
@@ -21,41 +21,6 @@ name
 <td colspan="2">gender
 <%=user['gender']%>
 
-
-</td>
-</tr>
-<tr>
-<td colspan="2">Alma Mater
-<%=user['almamater']%>
-
-</td>
-</tr>
-<tr>
-<td colspan="2">Education Level
-<%=user['educationlevel']%>
-
-</td>
-</tr>
-<tr>
-<td colspan="2">Degree
-<%=user['degree']%>
-
-</td>
-</tr>
-<tr>
-<td colspan="2">Status
-<%=user['status']%>
-</td>
-</tr>
-<tr>
-<td colspan="2">School/Department
-<%=user['school']%>
-
-</td>
-</tr>
-<tr>
-<td colspan="2">Discipline
-<%=user['discipline']%>
 
 </td>
 </tr>
@@ -72,26 +37,12 @@ name
 </td>
 </tr>
 <tr>
-<td colspan="2">background education<br>
-
-<table id="div1" data-mydata="0">
-<%=render_collection(partial="welcome/_educations.html.erb",collection=user["educations"],as_='education')%>
-
-
-</table>
-</td>
 <td rowspan="4">personal profile
 	<%=user['profile']%>
 
 </td>
 </tr>
 <tr>
-<td colspan="2">Research Focus
-<table id="div3" data-mydata="0">
-<%=render_collection(partial="welcome/_researchfocus.html.erb",collection=user["researchfocus"],as_='focus')%>
-	</table>
-</td>
-</tr>
 <tr>
 <td colspan="2">Other Contact Information
 <table>
@@ -118,15 +69,6 @@ email :
 
 </td>
 </tr>
-<tr>
-<td colspan="2">Work Experience
-<table id="div2" data-mydata="0">
-<%=render_collection(partial="welcome/_jobs.html.erb",collection=user["jobs"],as_='job')%>
-
-</table>
-
-
-</td>
 </tr>
 
 <tr>

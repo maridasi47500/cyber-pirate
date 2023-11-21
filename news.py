@@ -2,52 +2,28 @@ import sqlite3
 import sys
 import re
 from model import Model
-class User(Model):
+class News(Model):
     def __init__(self):
         self.con=sqlite3.connect(self.mydb)
         self.con.row_factory = sqlite3.Row
         self.cur=self.con.cursor()
-        self.cur.execute("""create table if not exists users(
+        self.cur.execute("""create table if not exists news(
         id integer primary key autoincrement,
-        mypic string,
-        metier string,
-        nomcomplet string,
-        gender string,
-        businessaddress string,
-        postaladdress string,
-        email string,
-        profile text,
-        zipcode string,
-        otheremail string,
-        password string not null
-                );""")
+        content text);""")
         self.con.commit()
-        #self.con.close()
-    def getbyemailpw(self,email,pw):
-        self.cur.execute("select * from users where otheremail = ? and password = ?",(email,pw,))
-
-        
-        row=self.cur.fetchone()
-        print(dict(row))
-        print(row)
-        if row:
-            return {"notice":"vous êtes connecté","name": row["nomcomplet"],"email": row["otheremail"]}
-        else:
-            return {"notice":"","name":"","email": ""}
     def getall(self):
-        self.cur.execute("select * from users")
-        
+        self.cur.execute("select * from news")
         row=self.cur.fetchall()
         return row
     def deletebyid(self,myid):
-        self.cur.execute("delete from users where id = ?",(myid,))
+        self.cur.execute("delete from news where id = ?",(myid,))
         
 
         job=self.cur.fetchall()
         self.con.commit()
         return None
     def getbyid(self,myid):
-        self.cur.execute("select * from users where id = ?",(myid,))
+        self.cur.execute("select * from news where id = ?",(myid,))
         
         row=dict(self.cur.fetchone())
         print(row["id"], "row id")
@@ -61,28 +37,29 @@ class User(Model):
         for x in params:
             if 'confirmation' in x:
                 continue
+            if 'submit' in x:
+                continue
             if 'envoyer' in x:
                 continue
             if '[' not in x and x not in ['routeparams']:
                 print("my params",x,params[x])
                 myhash[x]=params[x][0]
-        print("M Y H A S H")
+        print("CECI EST MON H A SH")
         print(myhash)
         try:
-          self.cur.execute("insert into users (postaladdress,metier,mypic,nomcomplet,gender, businessaddress, email, profile, zipcode, otheremail, password) values (:postaladdress,:metier,:mypic,:nomcomplet,:gender, :businessaddress, :email, :profile, :zipcode, :otheremail, :password)",myhash)
+          self.cur.execute("insert into news (content) values (:content)",myhash)
           self.con.commit()
         except Exception as e:
           print("my error"+str(e))
         
-        self.cur.execute("select id,otheremail,nomcomplet from users where password = ? and otheremail = ?", (myhash["password"], myhash["otheremail"]))
-        row=self.cur.fetchone()
-        
-        myid=row["id"]
 
-        print("my row id", myid)
         #print(arr, "my array")
         self.con.commit()
-        return {"notice": "vous avez été inscrit(e)","email": row["otheremail"],"name":row["nomcomplet"]}
+        myid=self.cur.lastrowid
+        
+
+        print("my row id", myid)
+        return {"notice": "vous avez créé une news","news_id": str(myid)}
 
 
     def update(self,params):
@@ -90,6 +67,8 @@ class User(Model):
         print("ok")
         myhash={}
         for x in params:
+            if 'submit' in x:
+                continue
             if 'envoyer' in x:
                 continue
             if 'confirmation' in x:

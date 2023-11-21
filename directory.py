@@ -1,5 +1,8 @@
 class Directory():
     session=False
+    pic=False
+    redirect=False
+    js=False
     def __init__(self, title):
         self.title=title
         self.session={"email":None,"name":None,"notice":None}
@@ -27,6 +30,14 @@ class Directory():
                 print("erreur session ",x)
                 self.session[x]=""
         self.session["mysession"]=False
+    def set_session_params(self,s):
+        for x in s:
+            try:
+                self.session[x]=s[x]
+            except:
+                print("erreur session ",x)
+                self.session[x]=""
+        self.session["mysession"]=True
     def set_session(self,s):
         for x in ["email","name","notice"]:
             try:
@@ -39,6 +50,14 @@ class Directory():
         return self.url
     def set_url(self,url):
         self.url=url
+    def get_js(self):
+        return self.js
+    def set_js(self,html):
+        self.js=html
+    def get_pic(self):
+        return self.pic
+    def set_pic(self,html):
+        self.pic=html
     def get_html(self):
         return self.html
     def set_html(self,html):

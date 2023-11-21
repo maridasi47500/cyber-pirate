@@ -111,4 +111,4 @@ class RenderFigure():
         
         self.body+=open(os.path.abspath(self.path+"/"+filename),"r").read()
         self.body= open(os.path.abspath(self.mytemplate),"r").read().format(debutmots=self.title, mot=self.headingone,plusdemots=self.body)
-        return self.render_body()
+        return self.render_body().encode("utf-8")
