@@ -3,6 +3,8 @@ class Directory():
     pic=False
     redirect=False
     js=False
+    json=False
+    css=False
     def __init__(self, title):
         self.title=title
         self.session={"email":None,"name":None,"notice":None}
@@ -50,6 +52,14 @@ class Directory():
         return self.url
     def set_url(self,url):
         self.url=url
+    def get_css(self):
+        return self.css
+    def set_css(self,html):
+        self.css=html
+    def get_json(self):
+        return self.json
+    def set_json(self,html):
+        self.json=html
     def get_js(self):
         return self.js
     def set_js(self,html):

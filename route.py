@@ -4,6 +4,7 @@ from user import User
 from news import News
 from mypic import Pic
 from javascript import Js
+from stylesheet import Css
 import re
 import traceback
 import sys
@@ -25,6 +26,9 @@ class Route():
 
           self.Program.set_redirect(x)
           self.render_figure.set_redirect(self.Program.get_redirect())
+    def set_json(self,x):
+          self.Program.set_json(x)
+          self.render_figure.set_json(self.Program.get_json())
     def set_notice(self,x):
           print("set session",x)
           self.Program.set_session_params({"notice":x})
@@ -37,26 +41,28 @@ class Route():
         self.Program.logout()
         self.set_redirect("/")
         return self.render_figure.render_redirect()
-    def login(self,search):
-        self.user=self.dbUsers.getbyemailpw(search["email"][0],search["password"][0])
+    def login(self,s):
+        search=self.get_post_data()(params=("email","password"))
+        self.user=self.dbUsers.getbyemailpw(search["email"],search["password"])
         print("user trouve", self.user)
         if self.user["email"]:
           self.set_session(self.user)
-          self.set_redirect("/welcome")
+          self.set_session(self.user)
+          self.set_json("{\"redirect\":\"/welcome\"}")
         else:
-          self.set_redirect("/")
+          self.set_json("{\"redirect\":\"/\"}")
         print("session login",self.Program.get_session())
-        return self.render_figure.render_redirect()
+        return self.render_figure.render_json()
     def new(self,search):
         return self.render_figure.render_figure("news/new.html")
     def createnew(self,params={}):
         self.user=self.dbNews.create(params)
         if self.user["news_id"]:
           self.set_notice(self.user["notice"])
-          self.set_redirect("/seemynews/"+self.user["news_id"])
+          self.set_json("{\"redirect\":\"/seemynews/"+self.user["news_id"]+"\"}")
         else:
-          self.set_redirect("/")
-          return self.render_figure.render_redirect()
+          self.set_json("{\"redirect\":\"/seemynews/"+self.user["news_id"]+"\"}")
+          return self.render_figure.render_json()
     def welcome(self,search):
         return self.render_figure.render_figure("welcome/index.html")
     def delete_user(self,params={}):
@@ -95,17 +101,17 @@ class Route():
         self.set_redirect(("/seeuser/"+params["id"][0]))
         return self.render_figure.render_redirect()
     def save_user(self,params={}):
-        print("My  f unc",self.post_data)
-        myparam=self.get_post_data()(params=("email", "mypic","postaladdress","nomcomplet"))
-        print("My p  a r a m",myparam)
+        #print("My  f unc",self.post_data)
+        myparam=self.get_post_data()(params=("businessaddress","gender","profile","metier", "otheremail", "password","zipcode", "email", "mypic","postaladdress","nomcomplet","password_confirmation"))
+        #print("My p  a r a m",myparam)
         self.user=self.dbUsers.create(myparam)
         if self.user["email"]:
           self.set_session(self.user)
-          self.set_redirect("/welcome")
-          return self.render_figure.render_redirect()
+          self.set_json("{\"redirect\":\"/welcome\"}")
+          return self.render_figure.render_json()
         else:
-          self.set_redirect("/")
-          return self.render_figure.render_redirect()
+          self.set_json("{\"redirect\":\"/e\"}")
+          return self.render_figure.render_json()
     def data_reach(self,search):
         return self.render_figure.render_figure("welcome/datareach.html")
     def run(self,redirect=False,redirect_path=False,path=False,session=False,params={},url=False,post_data=False):
@@ -124,6 +130,10 @@ class Route():
         if path and path.endswith("jpg"):
             self.Program=Pic(path)
             self.Program.set_path("./")
+        elif path and path.endswith(".jfif"):
+            self.Program=Pic(path)
+        elif path and path.endswith(".css"):
+            self.Program=Css(path)
         elif path and path.endswith(".js"):
             self.Program=Js(path)
         elif path:
@@ -140,7 +150,6 @@ class Route():
                     "^/seeuser/([0-9]+)$":self.seeuser,
                     "^/edituser/([0-9]+)$":self.edit_user,
                     "^/deleteuser/([0-9]+)$":self.delete_user,
-                    '^/data_reach$':self.data_reach,
                     '^/login$':self.login,
 
                     '^/welcome$':self.myusers,
@@ -148,17 +157,15 @@ class Route():
                     '^/$': self.welcome,
                     }
             REDIRECT={"/save_user": "/welcome"}
-            patterns=ROUTES.keys()
-            functions=ROUTES.values()
-            for pattern,case in zip(patterns,functions):
-               print("pattern=",pattern)
-               x=(re.match(pattern,path))
+            for route in ROUTES:
+               print("pattern=",route)
+               mycase=ROUTES[route]
+               x=(re.match(route,path))
                print(True if x else False)
                if x:
                    params["routeparams"]=x.groups()
-                   #if not self.Program.get_redirect():
                    try:
-                       self.Program.set_html(html=case(params))
+                       self.Program.set_html(html=mycase(params))
                    except Exception:  
                        self.Program.set_html(html="<p>une erreur s'est produite "+str(traceback.format_exc())+"</p><a href=\"/\">retour à l'accueil</a>")
                    self.Program.redirect_if_not_logged_in()

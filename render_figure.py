@@ -107,8 +107,12 @@ class RenderFigure():
         self.body="<a href=\"{url}\">{text}</a>".format(url=self.get_redirect(),text="la page a été redirigée")
         
         return self.body
+    def set_json(self,x):
+        self.body=x
+    def render_json(self):
+        return self.body
     def render_figure(self,filename):
-        
         self.body+=open(os.path.abspath(self.path+"/"+filename),"r").read()
-        self.body= open(os.path.abspath(self.mytemplate),"r").read().format(debutmots=self.title, mot=self.headingone,plusdemots=self.body)
+        if self.mytemplate:
+            self.body= open(os.path.abspath(self.mytemplate),"r").read().format(debutmots=self.title, mot=self.headingone,plusdemots=self.body)
         return self.render_body().encode("utf-8")

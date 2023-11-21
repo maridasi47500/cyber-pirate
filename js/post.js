@@ -20,10 +20,10 @@ return false;
 
     // Custom XMLHttpRequest
     success: function (data) {
-	    if (data.connecte == 0){
-	    window.location="/login?s=2";
+	    if (data.redirect){
+	    window.location=data.redirect;
 	    }else{
-	    window.location="/hello";
+	    window.location="/welcome";
 	    }
 },
     xhr: function () {

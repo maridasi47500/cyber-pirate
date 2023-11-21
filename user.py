@@ -24,6 +24,8 @@ class User(Model):
         self.con.commit()
         #self.con.close()
     def getbyemailpw(self,email,pw):
+        print("PARAMS email, pw")
+        print(email, pw)
         self.cur.execute("select * from users where otheremail = ? and password = ?",(email,pw,))
 
         
@@ -64,10 +66,13 @@ class User(Model):
             if 'envoyer' in x:
                 continue
             if '[' not in x and x not in ['routeparams']:
-                print("my params",x,params[x])
-                myhash[x]=params[x][0]
+                #print("my params",x,params[x])
+                try:
+                  myhash[x]=str(params[x].decode())
+                except:
+                  myhash[x]=str(params[x])
         print("M Y H A S H")
-        print(myhash)
+        print(myhash,myhash.keys())
         try:
           self.cur.execute("insert into users (postaladdress,metier,mypic,nomcomplet,gender, businessaddress, email, profile, zipcode, otheremail, password) values (:postaladdress,:metier,:mypic,:nomcomplet,:gender, :businessaddress, :email, :profile, :zipcode, :otheremail, :password)",myhash)
           self.con.commit()
