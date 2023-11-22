@@ -25,6 +25,7 @@ class S(BaseHTTPRequestHandler):
         print("======",x,"======")
     def deal_post_data(self,params):
         try:
+            monpremier=True
             content_type = self.headers['Content-Type']
             myhash={}
             someparams=[]
@@ -36,6 +37,7 @@ class S(BaseHTTPRequestHandler):
             line = self.rfile.readline()
             print(self.myline(line))
             remainbytes -= len(line)
+            preline=b""
             print(line)
             if not boundary in line:
                 print(False, "Content NOT begin with boundary")
@@ -59,6 +61,7 @@ class S(BaseHTTPRequestHandler):
                     if len(fn) == 0 and len(n) > 0:
                         findparam=1
                         print("search param value",param)
+                        #premier \r\n
                         preline = self.rfile.readline()
                         remainbytes -= len(preline)
                         self.myline(preline)
@@ -101,6 +104,7 @@ class S(BaseHTTPRequestHandler):
                         somefilename=fn[0]
                         print("file name : ",filename)
                         fn = os.path.join(path, filename)
+                        #\r\
                         preline = self.rfile.readline()
                         remainbytes -= len(preline)
                         self.myline(preline)
@@ -210,7 +214,7 @@ class S(BaseHTTPRequestHandler):
             req.cookies.set(x,sess[x])
 
         self._set_response(redirect=myProgram.get_redirect(),cookies=req.cookies,pic=myProgram.get_pic(),js=myProgram.get_js(),css=myProgram.get_css(),json=myProgram.get_json())
-        self.wfile.write(myProgram.get_html().encode('utf-8'))
+        self.wfile.write(myProgram.get_html())
 
 def run(server_class=HTTPServer, handler_class=S, port=8080):
     logging.basicConfig(level=logging.INFO)

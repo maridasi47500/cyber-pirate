@@ -43,7 +43,7 @@ class News(Model):
                 continue
             if '[' not in x and x not in ['routeparams']:
                 print("my params",x,params[x])
-                myhash[x]=params[x][0]
+                myhash[x]=params[x]
         print("CECI EST MON H A SH")
         print(myhash)
         try:

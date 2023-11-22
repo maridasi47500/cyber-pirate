@@ -56,13 +56,14 @@ class Route():
     def new(self,search):
         return self.render_figure.render_figure("news/new.html")
     def createnew(self,params={}):
-        self.user=self.dbNews.create(params)
+        myparams=self.get_post_data()(params=("content",))
+        self.user=self.dbNews.create(myparams)
         if self.user["news_id"]:
           self.set_notice(self.user["notice"])
           self.set_json("{\"redirect\":\"/seemynews/"+self.user["news_id"]+"\"}")
         else:
-          self.set_json("{\"redirect\":\"/seemynews/"+self.user["news_id"]+"\"}")
-          return self.render_figure.render_json()
+          self.set_json("{\"redirect\":\"/new\"}")
+        return self.render_figure.render_json()
     def welcome(self,search):
         return self.render_figure.render_figure("welcome/index.html")
     def delete_user(self,params={}):
@@ -77,11 +78,13 @@ class Route():
         self.render_figure.set_param("user",User().getbyid(myparam["id"]))
         return self.render_figure.render_figure("welcome/edituser.html")
     def seenew(self,params={}):
-        myparam=self.post_data(self.getparams)
+        getparams=("id",)
+        myparam=self.post_data(getparams)
         self.render_figure.set_param("news",News().getbyid(myparam["id"]))
         return self.render_figure.render_figure("news/shownews.html")
     def seeuser(self,params={}):
-        myparam=self.post_data(self.getparams)
+        getparams=("id",)
+        myparam=self.post_data(getparams)
         self.render_figure.set_param("user",User().getbyid(myparam["id"]))
         return self.render_figure.render_figure("welcome/showuser.html")
     def mynews(self,params={}):

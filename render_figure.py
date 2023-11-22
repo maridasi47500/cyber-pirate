@@ -108,11 +108,12 @@ class RenderFigure():
         
         return self.body
     def set_json(self,x):
-        self.body=x
+        self.body=(x).encode("utf-8")
+
     def render_json(self):
         return self.body
     def render_figure(self,filename):
         self.body+=open(os.path.abspath(self.path+"/"+filename),"r").read()
         if self.mytemplate:
             self.body= open(os.path.abspath(self.mytemplate),"r").read().format(debutmots=self.title, mot=self.headingone,plusdemots=self.body)
-        return self.render_body().encode("utf-8")
+        return self.body.decode("utf-8")

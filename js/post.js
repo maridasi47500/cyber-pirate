@@ -20,6 +20,8 @@ return false;
 
     // Custom XMLHttpRequest
     success: function (data) {
+	    console.log(JSON.stringify(data))
+	    console.log(JSON.stringify(data.redirect))
 	    if (data.redirect){
 	    window.location=data.redirect;
 	    }else{
