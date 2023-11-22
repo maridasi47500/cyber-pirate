@@ -114,6 +114,10 @@ class RenderFigure():
         return self.body
     def render_figure(self,filename):
         self.body+=open(os.path.abspath(self.path+"/"+filename),"r").read()
-        if self.mytemplate:
+        if self.mytemplate is not None:
             self.body= open(os.path.abspath(self.mytemplate),"r").read().format(debutmots=self.title, mot=self.headingone,plusdemots=self.body)
-        return self.body.decode("utf-8")
+        self.body=self.render_body()
+        try:
+          return self.body.encode("utf-8")
+        except:
+          return self.body

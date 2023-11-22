@@ -53,7 +53,7 @@ class Route():
           self.set_json("{\"redirect\":\"/\"}")
         print("session login",self.Program.get_session())
         return self.render_figure.render_json()
-    def new(self,search):
+    def new(self,search={}):
         return self.render_figure.render_figure("news/new.html")
     def createnew(self,params={}):
         myparams=self.get_post_data()(params=("content",))
@@ -80,12 +80,12 @@ class Route():
     def seenew(self,params={}):
         getparams=("id",)
         myparam=self.post_data(getparams)
-        self.render_figure.set_param("news",News().getbyid(myparam["id"]))
+        self.render_figure.set_param("news",News().getbyid(myparam["id"][0]))
         return self.render_figure.render_figure("news/shownews.html")
     def seeuser(self,params={}):
         getparams=("id",)
         myparam=self.post_data(getparams)
-        self.render_figure.set_param("user",User().getbyid(myparam["id"]))
+        self.render_figure.set_param("user",User().getbyid(myparam["id"][0]))
         return self.render_figure.render_figure("welcome/showuser.html")
     def mynews(self,params={}):
         self.render_figure.set_param("mynews",News().getall())
