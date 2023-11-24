@@ -23,7 +23,6 @@ class Route():
           self.Program.set_my_session(x)
           self.render_figure.set_session(self.Program.get_session())
     def set_redirect(self,x):
-
           self.Program.set_redirect(x)
           self.render_figure.set_redirect(self.Program.get_redirect())
     def set_json(self,x):
@@ -37,6 +36,10 @@ class Route():
           print("set session",x)
           self.Program.set_session(x)
           self.render_figure.set_session(self.Program.get_session())
+    def get_this_route_param(self,x,params):
+          print("set session",x)
+          return dict(zip(x,params["routeparams"]))
+          
     def logout(self,search):
         self.Program.logout()
         self.set_redirect("/")
@@ -52,6 +55,17 @@ class Route():
         else:
           self.set_json("{\"redirect\":\"/\"}")
         print("session login",self.Program.get_session())
+        return self.render_figure.render_json()
+    def datastorage(self,search={}):
+        return self.render_figure.render_figure("data/new.html")
+    def new_datastorage(self,params={}):
+        myparams=self.get_post_data()(params=("content",))
+        self.user=self.dbNews.create(myparams)
+        if self.user["storage_id"]:
+          self.set_notice(self.user["notice"])
+          self.set_json("{\"redirect\":\"/mystorage/"+self.user["storage_id"]+"\"}")
+        else:
+          self.set_json("{\"redirect\":\"/new_datastorage\"}")
         return self.render_figure.render_json()
     def new(self,search={}):
         return self.render_figure.render_figure("news/new.html")
@@ -78,14 +92,19 @@ class Route():
         self.render_figure.set_param("user",User().getbyid(myparam["id"]))
         return self.render_figure.render_figure("welcome/edituser.html")
     def seenew(self,params={}):
+        print("action see my new")
         getparams=("id",)
-        myparam=self.post_data(getparams)
-        self.render_figure.set_param("news",News().getbyid(myparam["id"][0]))
+        print("get param, action see my new",getparams)
+        myparam=self.get_this_route_param(getparams,params)
+        print("m params see my new")
+        print(myparam)
+        self.render_figure.set_param("news",News().getbyid(myparam["id"]))
         return self.render_figure.render_figure("news/shownews.html")
     def seeuser(self,params={}):
         getparams=("id",)
-        myparam=self.post_data(getparams)
-        self.render_figure.set_param("user",User().getbyid(myparam["id"][0]))
+        print("get param, action see my new",getparams)
+        myparam=self.get_this_route_param(getparams,params)
+        self.render_figure.set_param("user",User().getbyid(myparam["id"]))
         return self.render_figure.render_figure("welcome/showuser.html")
     def mynews(self,params={}):
         self.render_figure.set_param("mynews",News().getall())
@@ -142,6 +161,8 @@ class Route():
         elif path:
             print("link route ",path)
             ROUTES={
+                    "^/datastorage$":self.datastorage,
+                    "^/new_datastorage$":self.new_datastorage,
                     "^/allmynews$":self.mynews,
                     '^/logmeout$':self.logout,
                     '^/save_user$':self.save_user,
