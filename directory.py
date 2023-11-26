@@ -24,6 +24,14 @@ class Directory():
         self.session["notice"]=""
     def get_session(self):
         return self.session
+    def set_other_session(self,s):
+        for x in ["email","name","notice"]:
+            try:
+                self.session[x]=s[x]
+            except:
+                print("erreur session ",x)
+                self.session[x]=""
+        self.session["mysession"]=False
     def set_my_session(self,s):
         for x in ["email","name","notice"]:
             try:

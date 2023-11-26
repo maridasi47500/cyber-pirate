@@ -4,7 +4,7 @@ import traceback
 import sys
 class RenderFigure():
     def __init__(self,program):
-        self.session={}
+        self.session={"name":"","notice":"","mysession":False}
         self.mytemplate="./mypage/index.html"
         self.path=program.get_path()
         self.title=program.get_title()
@@ -36,8 +36,9 @@ class RenderFigure():
               for n in self.params:
                   loc[n]=self.params[n]
 
-              l=exec("myvalue="+k[0], globals(), loc)
               print(k[0])
+              l=exec("myvalue="+k[0], globals(), loc)
+
               mystr+=str(loc["myvalue"]) if loc["myvalue"] is not None else ""
               mystr+=k[1]
           return mystr

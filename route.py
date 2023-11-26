@@ -2,6 +2,7 @@ from directory import Directory
 from render_figure import RenderFigure
 from user import User
 from news import News
+from storage import Storage
 from mypic import Pic
 from javascript import Js
 from stylesheet import Css
@@ -16,6 +17,7 @@ class Route():
         self.mysession={"notice":None,"email":None,"name":None}
         self.dbUsers=User()
         self.dbNews=News()
+        self.dbStorage=Storage()
         self.render_figure=RenderFigure(self.Program)
         self.getparams=("id",)
     def set_my_session(self,x):
@@ -59,13 +61,13 @@ class Route():
     def datastorage(self,search={}):
         return self.render_figure.render_figure("data/new.html")
     def new_datastorage(self,params={}):
-        myparams=self.get_post_data()(params=("content",))
-        self.user=self.dbNews.create(myparams)
+        myparams=self.get_post_data()(params=("name","description",))
+        self.user=self.dbStorage.create(myparams)
         if self.user["storage_id"]:
           self.set_notice(self.user["notice"])
           self.set_json("{\"redirect\":\"/mystorage/"+self.user["storage_id"]+"\"}")
         else:
-          self.set_json("{\"redirect\":\"/new_datastorage\"}")
+          self.set_json("{\"redirect\":\"/datastorage\"}")
         return self.render_figure.render_json()
     def new(self,search={}):
         return self.render_figure.render_figure("news/new.html")
@@ -91,6 +93,15 @@ class Route():
         myparam=self.post_data(getparams)
         self.render_figure.set_param("user",User().getbyid(myparam["id"]))
         return self.render_figure.render_figure("welcome/edituser.html")
+    def seestorage(self,params={}):
+        print("action see my new")
+        getparams=("id",)
+        print("get param, action see my storage",getparams)
+        myparam=self.get_this_route_param(getparams,params)
+        print("m params see my new")
+        print(myparam)
+        self.render_figure.set_param("storage",self.dbStorage.getbyid(myparam["id"]))
+        return self.render_figure.render_figure("data/show.html")
     def seenew(self,params={}):
         print("action see my new")
         getparams=("id",)
@@ -106,6 +117,9 @@ class Route():
         myparam=self.get_this_route_param(getparams,params)
         self.render_figure.set_param("user",User().getbyid(myparam["id"]))
         return self.render_figure.render_figure("welcome/showuser.html")
+    def mystorages(self,params={}):
+        self.render_figure.set_param("mystorages",self.dbStorage.getall())
+        return self.render_figure.render_figure("data/all.html")
     def mynews(self,params={}):
         self.render_figure.set_param("mynews",News().getall())
         return self.render_figure.render_figure("news/allnews.html")
@@ -143,6 +157,7 @@ class Route():
             print("url : ",url)
             self.Program.set_url(url)
         self.set_my_session(session)
+
         if redirect:
             self.redirect=redirect
         if redirect_path:
@@ -161,9 +176,10 @@ class Route():
         elif path:
             print("link route ",path)
             ROUTES={
-                    "^/datastorage$":self.datastorage,
-                    "^/new_datastorage$":self.new_datastorage,
+                    "^/datastorage$":self.new_datastorage,
+                    "^/new_datastorage$":self.datastorage,
                     "^/allmynews$":self.mynews,
+                    "^/alldatastorage$":self.mystorages,
                     '^/logmeout$':self.logout,
                     '^/save_user$':self.save_user,
                     '^/update_user$':self.update_user,
@@ -171,6 +187,7 @@ class Route():
                     '^/createnew$':self.createnew,
 
                     "^/seemynews/([0-9]+)$":self.seenew,
+                    "^/mystorage/([0-9]+)$":self.seestorage,
                     "^/seeuser/([0-9]+)$":self.seeuser,
                     "^/edituser/([0-9]+)$":self.edit_user,
                     "^/deleteuser/([0-9]+)$":self.delete_user,
@@ -190,6 +207,8 @@ class Route():
                    params["routeparams"]=x.groups()
                    try:
                        self.Program.set_html(html=mycase(params))
+
+
                    except Exception:  
                        self.Program.set_html(html="<p>une erreur s'est produite "+str(traceback.format_exc())+"</p><a href=\"/\">retour à l'accueil</a>")
                    self.Program.redirect_if_not_logged_in()

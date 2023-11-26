@@ -10,7 +10,7 @@ class Storage(Model):
         self.cur.execute("""create table if not exists storages(
         id integer primary key autoincrement,
         name text,
-        content text,
+        description text
                 );""")
         self.con.commit()
         #self.con.close()
@@ -21,19 +21,14 @@ class Storage(Model):
         return row
     def deletebyid(self,myid):
         self.cur.execute("delete from storages where id = ?",(myid,))
-        
-
         job=self.cur.fetchall()
         self.con.commit()
         return None
     def getbyid(self,myid):
         self.cur.execute("select * from storages where id = ?",(myid,))
-        
         row=dict(self.cur.fetchone())
         print(row["id"], "row id")
-
         job=self.cur.fetchall()
-
         return row
     def create(self,params):
         print("ok")
@@ -51,21 +46,23 @@ class Storage(Model):
                   myhash[x]=str(params[x])
         print("M Y H A S H")
         print(myhash,myhash.keys())
+        myid=None
         try:
-          self.cur.execute("insert into storages (name,content) values (:name,:content)",myhash)
+          self.cur.execute("insert into storages (name,description) values (:name,:description)",myhash)
           self.con.commit()
+          myid=str(self.cur.lastrowid)
         except Exception as e:
           print("my error"+str(e))
         
-        self.cur.execute("select id,otheremail,nomcomplet from storages where password = ? and otheremail = ?", (myhash["password"], myhash["otheremail"]))
-        row=self.cur.fetchone()
-        
-        myid=row["id"]
+        #self.cur.execute("select id,name,description from storages where id = ?", (myid))
+        #row=self.cur.fetchone()
+        #
+        #myid=row["id"]
 
-        print("my row id", myid)
+        #print("my row id", myid)
         #print(arr, "my array")
-        self.con.commit()
-        return {"notice": "vous avez été inscrit(e)","email": row["otheremail"],"name":row["nomcomplet"]}
+        #self.con.commit()
+        return {"notice": "votre stockage a été ajouté","storage_id":myid}
 
 
     def update(self,params):
