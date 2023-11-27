@@ -94,7 +94,10 @@ mystr+="""        self.cur.execute("delete from {filename} where id = ?",(myid,)
           myid=str(self.cur.lastrowid)
         except Exception as e:
           print("my error"+str(e))
-        return {"notice": "votre {filename} a été ajouté","{filename}_id":myid}
+        azerty={notice}
+        azerty["{filename}_id"]=myid
+        azerty["notice"]="votre {filename} a été ajouté"
+        return azerty
 
 
 
@@ -102,7 +105,7 @@ mystr+="""        self.cur.execute("delete from {filename} where id = ?",(myid,)
 """
 if not os.path.isfile(filename+".py"):
   f = open(filename+".py", "w") 
-  res=(mystr.format(modelname=modelname,filename=filename,columns=columns,values=values,myhash={}))
+  res=(mystr.format(modelname=modelname,filename=filename,columns=columns,values=values,myhash={},notice={}))
   print(res)
   f.write(res)
   f.close()
