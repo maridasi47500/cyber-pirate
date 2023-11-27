@@ -36,10 +36,11 @@ class Machinealaver(Model):
     def getallbycentraleid(self,myid = 0):
 
         try:
-          self.cur.execute("select machinealaver.*,program.mydatetime,centrale.heure_debut,centrale.heure_fin from machinealaver where centrale_id = ? left outer joins program on program.machinealaver_id = machinealaver.id left joins centrale on centrale.id = machinealaver.centrale_id",(myid,))
+          self.cur.execute("select machinealaver.id, machinealaver.nom, machinealaver.centrale_id, machinealaver.num, machinealaver.etat,program.mydatetime,centrale.heure_debut,centrale.heure_fin from machinealaver left outer join program on program.machinealaver_id = machinealaver.id left outer join centrale on centrale.id = machinealaver.centrale_id group by machinealaver.id having machinealaver.centrale_id = ?",(myid,))
 
           row=self.cur.fetchall()
-        except:
+        except Exception as e:
+          print(e)
           row=[]
         return row
     def getall(self):

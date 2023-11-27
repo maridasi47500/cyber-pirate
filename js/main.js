@@ -14,7 +14,28 @@ type:"post",url:"/machinealaver",
 	    processData: false,
 
 success:function(data){
-for (var i = 0;i<data.length;i++){
+	var mymachine,item;
+	$("#nom_laverie").html(data.centrale_nom);
+	var machinelist=data.machine_info_status.machine_list;
+for (var i = 0;i<machinelist.length;i++){
+	item=machinelist[i];
+	mymachine=$("[data-machine-id=\""+String(item.selecteur_machine)+"\"]");
+	if (mymachine.length > 0){
+		mymachine.children("[data-selector='selecteur_machine']").html(item.selecteur_machine);
+		mymachine.children("[data-selector='description']").html(item.nom_type);
+		mymachine.children("[data-selector='status']").html(item.status);
+		if (item.status === "libre"){
+		mymachine.children("[data-selector='status']")[0].className="badge badge-success";
+		}
+	} else {
+		mymodelrow.children("[data-selector='selecteur_machine']").html(item.selecteur_machine);
+		mymodelrow.children("[data-selector='description']").html(item.nom_type);
+		mymodelrow.children("[data-selector='status']").html(item.status);
+		if (item.status === "libre"){
+		mymodelrow.children("[data-selector='status']")[0].className="badge badge-success";
+		}
+		$("#list-machines").append(mymodelrow);
+	}
 //hey
 //mymodelrow.children("").html("");
 /*

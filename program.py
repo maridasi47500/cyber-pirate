@@ -11,7 +11,7 @@ class Program(Model):
         self.cur=self.con.cursor()
         self.cur.execute("""create table if not exists program(
         id integer primary key autoincrement,
-        machinealaver_id text,
+        machinealaver_id integer,
             mydatetime datetime
                     );""")
         self.con.commit()

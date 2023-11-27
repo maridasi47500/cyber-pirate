@@ -111,8 +111,10 @@ class RenderFigure():
         
         return self.body
     def set_json(self,x):
+        self.json=True
         self.body=(x).encode("utf-8")
     def render_some_json(self,filename):
+
         self.body=open(os.path.abspath(self.path+"/"+filename),"r").read()
         self.body=self.render_body()
         try:

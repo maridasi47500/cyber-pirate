@@ -1,5 +1,6 @@
 from directory import Directory
 from render_figure import RenderFigure
+from program import Program
 from centrale import Centrale
 from machinealaver import Machinealaver
 
@@ -16,6 +17,7 @@ class Route():
         self.Program.set_path("./")
         self.mysession={"notice":None,"email":None,"name":None}
         self.dbCentrale=Centrale()
+        self.dbProgram=Program()
         self.dbMachinealaver=Machinealaver()
         self.render_figure=RenderFigure(self.Program)
         self.getparams=("id",)
@@ -30,6 +32,9 @@ class Route():
     def set_redirect(self,x):
         self.Program.set_redirect(x)
         self.render_figure.set_redirect(self.Program.get_redirect())
+    def render_some_json(self,x):
+        self.Program.set_json(True)
+        return self.render_figure.render_some_json(x)
     def set_json(self,x):
         self.Program.set_json(x)
         self.render_figure.set_json(self.Program.get_json())
@@ -55,11 +60,13 @@ class Route():
         print("hey")
         centrale=self.dbCentrale.getbyid(myid)
         print("centrale")
+        print("machinealaver",centrale)
         machinealaver=self.dbMachinealaver.getallbycentraleid(myid)
-        print("machinealaver")
+
+        print("machinealaver",machinealaver)
         self.render_figure.set_param("centrale",centrale)
         self.render_figure.set_param("machinealaver",machinealaver)
-        return self.render_figure.render_some_json("welcome/machinealaver.json")
+        return self.render_some_json("welcome/machinealaver.json")
     def voirtouteslesmachinealaver(self,search):
         try:
             print(search["myid"])
@@ -77,6 +84,7 @@ class Route():
         self.render_figure.set_param("centrale",centrale)
         print("cdntrale")
         self.render_figure.set_param("machinealaver",machinealaver)
+        self.json=True
         print("machine a lavercdntrale")
         return self.render_figure.render_figure("welcome/index.html")
     def run(self,redirect=False,redirect_path=False,path=False,session=False,params={},url=False,post_data=False):
