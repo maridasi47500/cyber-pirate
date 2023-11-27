@@ -10,11 +10,13 @@ class Centrale(Model):
         self.cur=self.con.cursor()
         self.cur.execute("""create table if not exists centrale(
         id integer primary key autoincrement,
-        nom text
+        nom text unique not null,
+        heure_debut time,
+        heure_fin time
                     );""")
 
         self.con.commit()
-        self.cur.execute("insert or ignore into centrale (nom) values (:nom)",{"nom":"ma laverie"})
+        self.cur.execute("insert or ignore into centrale (nom,heure_debut,heure_fin) values (:nom,:heure_debut,:heure_fin)",{"heure_debut":"06:00:00", "heure_fin":"19:15:00","nom":"ma laverie"})
         self.con.commit()
     def getall(self):
         self.cur.execute("select * from centrale")
@@ -28,8 +30,9 @@ class Centrale(Model):
         self.con.commit()
         return None
     def getbyid(self,myid = 0):
-        self.cur.execute("select * from centrale where id = ?",(myid,))
+
         try:
+          self.cur.execute("select * from centrale where id = ?",(myid,))
           row=dict(self.cur.fetchone())
         except:
           row={}

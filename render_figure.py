@@ -50,6 +50,7 @@ class RenderFigure():
         myview=open(os.path.abspath("./"+partial),"r").read()
         mystr=""
         i=0
+        paspremier=False
         for x in collection:
             for j in myview.split("<%="):
                 if "%>" not in j:
@@ -57,12 +58,13 @@ class RenderFigure():
                     continue
 
                 k=j.split("%>")
-                loc={as_: x,"index":i,  "params": self.params}
+                loc={"paspremier":paspremier,as_: x,"index":i,  "params": self.params}
                 print(k[0], "content render")
                 l=exec("myvalue="+k[0], globals(), loc)
                 mystr+=str(loc["myvalue"])
                 mystr+=k[1]
             i+=1
+            paspremier=True
         return mystr
     def partie_de_mes_mots(self,balise="",text=""):
         r="<{balise}>{text}</{balise}>"
@@ -110,6 +112,13 @@ class RenderFigure():
         return self.body
     def set_json(self,x):
         self.body=(x).encode("utf-8")
+    def render_some_json(self,filename):
+        self.body=open(os.path.abspath(self.path+"/"+filename),"r").read()
+        self.body=self.render_body()
+        try:
+          return self.body.encode("utf-8")
+        except:
+          return self.body
 
     def render_json(self):
         return self.body

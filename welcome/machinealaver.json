@@ -1,6 +1,6 @@
 {"machine_info_status":{"machine_list":[
+	<%=render_collection(collection=params['machinealaver'], partial='welcome/_machinealaver.json', as_='machinealaver')%>
 
-{"machine_id":"6717","selecteur_machine":"12","nom":"","nom_type":"MACHINE 7kg","status":2,"temps":"0","heure_debut":"00:00:00","heure_fin":"23:59:00","time_before_off":0,"date_virtu_off":{"date":"2023-11-26 15:50:42.000000","timezone_type":2,"timezone":"Z"},"time_before_off_virtu":0},
 
-],"centrale_nom":"MARIN"}
+],"centrale_nom":"<%=params["centrale"]["nom"]%>"}
 }

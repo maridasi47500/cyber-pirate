@@ -19,6 +19,10 @@ class Route():
         self.dbMachinealaver=Machinealaver()
         self.render_figure=RenderFigure(self.Program)
         self.getparams=("id",)
+    def set_post_data(self,x):
+        self.post_data=x
+    def get_post_data(self):
+        return self.post_data
     def set_my_session(self,x):
         print("set session",x)
         self.Program.set_my_session(x)
@@ -46,30 +50,40 @@ class Route():
         self.set_redirect("/")
         return self.render_figure.render_redirect()
     def machinealaver(self,search):
+        myparam=self.get_post_data()(params=("myid",))
+        myid=myparam["myid"]
         print("hey")
         centrale=self.dbCentrale.getbyid(myid)
         print("centrale")
         machinealaver=self.dbMachinealaver.getallbycentraleid(myid)
         print("machinealaver")
         self.render_figure.set_param("centrale",centrale)
-        self.render_figure.set_param("machinealavercentrale",machinealaver)
-        return self.render_figure.render_figure("welcome/index.html")
+        self.render_figure.set_param("machinealaver",machinealaver)
+        return self.render_figure.render_some_json("welcome/machinealaver.json")
     def voirtouteslesmachinealaver(self,search):
         try:
+            print(search["myid"])
             myid=search["myid"][0]
         except:
             myid=None
-        print("hey")
+        print("hey",myid)
         centrale=self.dbCentrale.getbyid(myid)
         print("centrale")
         machinealaver=self.dbMachinealaver.getallbycentraleid(myid)
         print("machinealaver")
+        print(centrale)
+        print(machinealaver)
+        self.render_figure.set_param("myid",myid)
         self.render_figure.set_param("centrale",centrale)
-        self.render_figure.set_param("machinealavercentrale",machinealaver)
+        print("cdntrale")
+        self.render_figure.set_param("machinealaver",machinealaver)
+        print("machine a lavercdntrale")
         return self.render_figure.render_figure("welcome/index.html")
     def run(self,redirect=False,redirect_path=False,path=False,session=False,params={},url=False,post_data=False):
         if post_data:
+            print("post data")
             self.set_post_data(post_data)
+            print("post data set",post_data)
         if url:
             print("url : ",url)
             self.Program.set_url(url)
@@ -91,11 +105,13 @@ class Route():
         elif path and path.endswith(".js"):
             self.Program=Js(path)
         elif path:
+            path=path.split("?")[0]
             print("link route ",path)
             ROUTES={
 
-                    '^/$': self.voirtouteslesmachinealaver,
                     '^/machinealaver$': self.machinealaver,
+                    '^/$': self.voirtouteslesmachinealaver,
+
                     }
             REDIRECT={"/save_user": "/welcome"}
             for route in ROUTES:
@@ -111,7 +127,6 @@ class Route():
 
                    except Exception:  
                        self.Program.set_html(html="<p>une erreur s'est produite "+str(traceback.format_exc())+"</p><a href=\"/\">retour à l'accueil</a>")
-                   self.Program.redirect_if_not_logged_in()
                    return self.Program
                else:
                    self.Program.set_html(html="<p>la page n'a pas été trouvée</p><a href=\"/\">retour à l'accueil</a>")

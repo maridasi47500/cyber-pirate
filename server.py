@@ -20,11 +20,21 @@ req.cookies["email"]=""
 req.cookies["name"]=""
 req.cookies["notice"]=""
 from urllib.parse import urlencode
+# my server
+import time, socket, threading
+from http.server import test as _test
+from socketserver     import ThreadingMixIn
+from http.cookies import SimpleCookie
+class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
+            pass
+
+
 class S(BaseHTTPRequestHandler):
     def myline(self,x):
         print("======",x,"======")
     def deal_post_data(self,params):
         try:
+            print("params as trouver",params)
             monpremier=True
             content_type = self.headers['Content-Type']
             myhash={}
@@ -185,10 +195,10 @@ class S(BaseHTTPRequestHandler):
         logging.info("GET request,\nPath: %s\nHeaders:\n%s\n", str(self.path), str(self.headers))
         myparams = parse_qs(urlparse(self.path).query)
         dictcook=(req.cookies.get_dict())
-
         myProgram=Route().run(path=str(self.path),params=myparams,session=dictcook,url=self.path,post_data=False)
         sess= myProgram.get_session()
         print("param session",sess)
+        print("param get",myparams)
         if sess:
             for cookie in req.cookies:
                     cookie.value = sess[cookie.name]
@@ -216,17 +226,9 @@ class S(BaseHTTPRequestHandler):
         self._set_response(redirect=myProgram.get_redirect(),cookies=req.cookies,pic=myProgram.get_pic(),js=myProgram.get_js(),css=myProgram.get_css(),json=myProgram.get_json())
         self.wfile.write(myProgram.get_html())
 
-def run(server_class=HTTPServer, handler_class=S, port=8080):
-    logging.basicConfig(level=logging.INFO)
-    server_address = ('', port)
-    httpd = server_class(server_address, handler_class)
-    logging.info('Starting httpd...\n')
-    try:
-        httpd.serve_forever()
-    except KeyboardInterrupt:
-        pass
-    httpd.server_close()
-    logging.info('Stopping httpd...\n')
+def run(server_class=ThreadedHTTPServer, handler_class=S, port=8081):
+    logging.info('Starting httpd...\n'+str(port))
+    _test(handler_class,server_class,port=port)
 
 if __name__ == '__main__':
     from sys import argv

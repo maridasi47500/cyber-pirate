@@ -13,7 +13,9 @@ class Machinealaver(Model):
         nom text,
             etat text,
             centrale_id integer,
-            num integer
+            num integer,
+            UNIQUE(centrale_id, num) ON CONFLICT REPLACE
+
                     );""")
         self.con.commit()
         machinesalaver=[{"etat":"libre","num":"1","centrale_id":"1","nom":"machine a laver 5kg"}]
@@ -32,8 +34,9 @@ class Machinealaver(Model):
           self.cur.execute("insert or ignore into machinealaver (nom,etat,centrale_id,num) values (:nom,:etat,:centrale_id,:num)",myhash)
           self.con.commit()
     def getallbycentraleid(self,myid = 0):
-        self.cur.execute("select * from machinealaver where centrale_id = ?",(myid,))
+
         try:
+          self.cur.execute("select machinealaver.*,program.mydatetime,centrale.heure_debut,centrale.heure_fin from machinealaver where centrale_id = ? left outer joins program on program.machinealaver_id = machinealaver.id left joins centrale on centrale.id = machinealaver.centrale_id",(myid,))
 
           row=self.cur.fetchall()
         except:
