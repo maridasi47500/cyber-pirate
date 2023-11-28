@@ -21,12 +21,45 @@ class Program(Model):
 
         row=self.cur.fetchall()
         return row
+
     def deletebyid(self,myid):
 
         self.cur.execute("delete from program where id = ?",(myid,))
         job=self.cur.fetchall()
         self.con.commit()
         return None
+    def utiliser_machinealaver(self,centraleid,myid = 0):
+        mymachinealaver={}
+        machinealaverid=0
+        try:
+            somevalue=(myid, centraleid)
+            cherchemachinealav=self.cur.execute("select * from machinealaver where num = ? and centrale_id = ?",somevalue)
+            mymachinealaver=self.cur.fetchone()
+            machinealaverid=mymachinealaver["id"]
+        except Exception as e:
+            print("okokok",e)
+        now=datetime.datetime.now()
+
+        myhash={"machinealaver_id":machinealaverid, "mydatetime": now}
+        somevalue=(machinealaverid, now,)
+        cherche=self.cur.execute("select * from program where machinealaver_id = ? and datetime(mydatetime,'+45 minutes') > ?",somevalue)
+        mycherche=self.cur.fetchall()
+        try:
+          if len(mycherche) == 0:
+            self.cur.execute("insert into program (machinealaver_id,mydatetime) values (:machinealaver_id,:mydatetime)",myhash)
+            self.con.commit()
+            self.cur.execute("update machinealaver set etat = 'occupe' where id = ?",(machinealaverid,))
+            self.con.commit()
+            myid=str(self.cur.lastrowid)
+        except Exception as e:
+          print("my error"+str(e))
+        cherche=self.cur.execute("select * from program where machinealaver_id = ? and datetime(mydatetime,'+45 minutes') > ?",somevalue)
+        mycherche=self.cur.fetchall()
+        myid=str(self.cur.lastrowid)
+        azerty={}
+        azerty["program_id"]=myid
+        azerty["notice"]="votre program a été ajouté"
+        return azerty
     def getbyid(self,myid):
         self.cur.execute("select * from program where id = ?",(myid,))
         row=dict(self.cur.fetchone())

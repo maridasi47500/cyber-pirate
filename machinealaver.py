@@ -36,6 +36,10 @@ class Machinealaver(Model):
     def getallbycentraleid(self,myid = 0):
 
         try:
+          #self.cur.execute("update machinealaver set etat = 'libre' where centrale_id = ? and (select * from program where program.machinealaver_id = machinealaver.id and datetime(program.mydatetime, '+45 minutes') <  CURRENT_TIMESTAMP) > 0 and etat <> 'libre'",(myid,))
+          #self.con.commit()
+          #self.cur.execute("update machinealaver set etat = 'bientotlibre' where centrale_id = ? and (select * from program where program.machinealaver_id = machinealaver.id and datetime(program.mydatetime, '+45 minutes') <  datetime(CURRENT_TIMESTAMP,'+10 minutes')) > 0 and etat = 'occupe'",(myid,))
+          #self.con.commit()
           self.cur.execute("select machinealaver.id, machinealaver.nom, machinealaver.centrale_id, machinealaver.num, machinealaver.etat,program.mydatetime,centrale.heure_debut,centrale.heure_fin from machinealaver left outer join program on program.machinealaver_id = machinealaver.id left outer join centrale on centrale.id = machinealaver.centrale_id group by machinealaver.id having machinealaver.centrale_id = ?",(myid,))
 
           row=self.cur.fetchall()
