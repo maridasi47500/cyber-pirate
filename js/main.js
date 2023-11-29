@@ -1,4 +1,40 @@
+
+	function myFunc(mydiv) {
+		// Get the snackbar DIV
+		var nom_machine=mydiv.parentElement.parentElement.parentElement.children[1].children[0].children[0].innerHTML;
+		myFunction('vous avez activé l\'alerte pour '+nom_machine);
+		mydiv.dataset.myalert='on';
+		           }
+	function myFunction(sometext) {
+		// Get the snackbar DIV
+		   var x = document.getElementById("snackbar");
+		x.innerHTML=sometext;
+		
+		     // Add the "show" class to DIV
+		       x.className = "show";
+		
+		         // After 3 seconds, remove the show class from DIV
+		           setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+		           }
+
 $(function(){
+	function secondsToMinutesAndSeconds(totalSeconds) {
+		  var minutes = Math.floor(totalSeconds / 60);
+		  var seconds = totalSeconds % 60;
+
+		  return {
+			      minutes: minutes,
+			      seconds: seconds
+			    };
+	}
+	function montempsrestant(min,sec) {
+		var temps=45*60;
+		  var seconds = temps - (min*60 + sec);
+
+		  return seconds;
+	}
+
+
 const modelrow=$("[data-machine-id='0']");
 var mymodelrowstring=modelrow[0].outerHTML;
 var mymodelrow=$.parseHTML(mymodelrowstring);
@@ -15,7 +51,8 @@ type:"post",url:"/machinealaver",
 	    processData: false,
 
 success:function(data){
-	var mymachine,item,mydate,thisdate,hrs,minutes,seconds;
+	var mymachine,item,mydate,thisdate,hrs,minutes,seconds,alertitem,statusitem,selecteurmachinenum;
+	var tempsrestant;
 	$("#nom_laverie").html(data.centrale_nom);
 	var machinelist=data.machine_info_status.machine_list;
 
@@ -32,7 +69,8 @@ for (var i = 0;i<machinelist.length;i++){
 
 	}
 	console.log(mymachine);
-        mymachine.children().children("[data-selector='selecteur_machine']").html(item.selecteur_machine);
+        selecteurmachinenum=mymachine.children().children("[data-selector='selecteur_machine']");
+	selecteurmachinenum.html(item.selecteur_machine);
         mymachine.children().children().children("[data-selector='description']").html(item.nom_type);
         mymachine.children().children("[data-selector='status']").html(item.status);
 	mydate=item.date_virtu_off.date;
@@ -40,22 +78,31 @@ for (var i = 0;i<machinelist.length;i++){
 	hrs=thisdate.getUTCHours();
 	minutes=thisdate.getUTCMinutes();
 	seconds=thisdate.getUTCSeconds();
+	console.log(hrs,minutes,seconds);
+	statusitem=mymachine.children().children("[data-selector='status']");
+        alertitem=mymachine.children().children().children("[data-selector='alert']");
         if (item.status === "hs"){
-        mymachine.children().children("[data-selector='status']")[0].className="badge bg-danger";
-        mymachine.children().children("[data-selector='status']").html("hs");
-        mymachine.children().children().children("[data-selector='alert']").addClass("disabled");
-	}else if ((hrs === 0 && minutes <= 0) || mydate === "None") {
-        mymachine.children().children("[data-selector='status']")[0].className="badge bg-success";
-        mymachine.children().children().children("[data-selector='alert']").addClass("disabled");
-        mymachine.children().children("[data-selector='status']").html("libre");
-	} else if (hrs === 0 && minutes <= 10 && minutes >= 1) {
-        mymachine.children().children().children("[data-selector='alert']").removeClass("disabled");
-        mymachine.children().children("[data-selector='status']")[0].className="badge bg-info";
-        mymachine.children().children("[data-selector='status']").html(String(minutes)+"m"+String(seconds)+"s");
+        statusitem[0].className="badge bg-danger";
+        statusitem.html("hs");
+        statusalert.addClass("disabled");
+	}else if ((hrs >= 1) || (minutes >= 45 && hrs === 0) || (hrs > 0 && minutes >= 0) || mydate === "None") {
+
+	statusitem[0].className="badge bg-success";
+        alertitem.addClass("disabled");
+        statusitem.html("libre");
+        if (alertitem[0].dataset.myalert==="on") {
+        alertitem[0].dataset.myalert="off";
+	myFunction("la machine a laver n°"+String(selecteurmachinenum.html())+" a fini son cycle");
+	}
+	} else if (hrs === 0 && minutes >= 35 && minutes <= 44) {
+        alertitem.removeClass("disabled");
+        statusitem[0].className="badge bg-info";
+        tempsrestant=secondsToMinutesAndSeconds(montempsrestant(minutes, seconds));
+        statusitem.html(String(tempsrestant.minutes)+"m"+String(tempsrestant.seconds)+"s");
 	} else if (hrs === 0 && minutes < 45 && minutes > 0) {
-        mymachine.children().children("[data-selector='status']")[0].className="badge bg-warning";
-        mymachine.children().children("[data-selector='status']").html("occupé");
-        mymachine.children().children().children("[data-selector='alert']").removeClass("disabled");
+        statusitem[0].className="badge bg-warning";
+        statusitem.html("occupé");
+        alertitem.removeClass("disabled");
 	}
 //hey
 //mymodelrow.children("").html("");

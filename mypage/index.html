@@ -208,7 +208,7 @@
 
             <div style="text-align: center">
 
-              <button style="width:80%;" data-selector="alert" type="button" class="btn btn-primary btn-sm " onclick="">
+              <button style="width:80%;" data-myalert="off" data-selector="alert" type="button" class="btn btn-primary btn-sm " onclick="this.dataset.myalert === 'off' ? (myFunc(this)) : myFunction('vous avez déjà activé l\'alerte pour cette machine à laver')">
 
                 <span class="glyphicon glyphicon-bell" aria-hidden="true">
 
@@ -397,6 +397,7 @@
     </div><!-- /.modal-dialog -->
 
   </div><!-- /.modal -->
+  <div id="snackbar">Some text some message..</div>
 
 
 

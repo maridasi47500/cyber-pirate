@@ -14,3 +14,8 @@ from program import Program
 Program().utiliser_machine(1, 8) 
 ```
 - (centrale 1 machine a laver n°8)
+- Par exemple fais en ligne commande
+```
+python3 occupemachine.py 8
+```
+- (centrale 1 machine a laver n°8)
