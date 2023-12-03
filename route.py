@@ -1,8 +1,7 @@
 from directory import Directory
 from render_figure import RenderFigure
-from program import Program
-from centrale import Centrale
-from machinealaver import Machinealaver
+from myscript import Myscript
+from mycommandline import Myscript
 
 from mypic import Pic
 from javascript import Js
@@ -13,7 +12,7 @@ import sys
 
 class Route():
     def __init__(self):
-        self.Program=Directory("Ma laverie")
+        self.Program=Directory("hacker ethique")
         self.Program.set_path("./")
         self.mysession={"notice":None,"email":None,"name":None}
         self.dbCentrale=Centrale()
@@ -67,25 +66,12 @@ class Route():
         self.render_figure.set_param("centrale",centrale)
         self.render_figure.set_param("machinealaver",machinealaver)
         return self.render_some_json("welcome/machinealaver.json")
-    def voirtouteslesmachinealaver(self,search):
+    def hello(self,search):
         try:
             print(search["myid"])
             myid=search["myid"][0]
         except:
             myid=None
-        print("hey",myid)
-        centrale=self.dbCentrale.getbyid(myid)
-        print("centrale")
-        machinealaver=self.dbMachinealaver.getallbycentraleid(myid)
-        print("machinealaver")
-        print(centrale)
-        print(machinealaver)
-        self.render_figure.set_param("myid",myid)
-        self.render_figure.set_param("centrale",centrale)
-        print("cdntrale")
-        self.render_figure.set_param("machinealaver",machinealaver)
-        self.json=True
-        print("machine a lavercdntrale")
         return self.render_figure.render_figure("welcome/index.html")
     def run(self,redirect=False,redirect_path=False,path=False,session=False,params={},url=False,post_data=False):
         if post_data:
@@ -117,8 +103,7 @@ class Route():
             print("link route ",path)
             ROUTES={
 
-                    '^/machinealaver$': self.machinealaver,
-                    '^/$': self.voirtouteslesmachinealaver,
+                    '^/$': self.hello,
 
                     }
             REDIRECT={"/save_user": "/welcome"}

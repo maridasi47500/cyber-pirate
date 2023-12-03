@@ -1,21 +1,4 @@
-# bienvenue dans centrale de macine à aver
-* sur la page d'accueil
-- mes machines à laver dispo et occupées ou hs sont updatées 
+# bienvenue dans hacker ethique
+- bien sur j veux me rappeler de se que je sais faire comme programmes :snake: :gem:
+- ecrire dans un fichier :file_folder: et dans une base de donneess 	meme si j'ai pas peur de tout oublier du jour au lendemain :skull:	
 
-- une alerte (toaster) et envoyé  pendant quelques seconde quand 'jai activé l'alerte
-
-faire 
-```
-sh mysite.sh
-```
-- pour occuper une machine à laver fais 
-```
-from program import Program
-Program().utiliser_machine(1, 8) 
-```
-- (centrale 1 machine a laver n°8)
-- Par exemple fais en ligne commande
-```
-python3 occupemachine.py 8
-```
-- (centrale 1 machine a laver n°8)
