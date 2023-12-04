@@ -2,6 +2,7 @@ from directory import Directory
 from render_figure import RenderFigure
 from myscript import Myscript
 from mycommandline import Myscript
+from user import User
 
 from mypic import Pic
 from javascript import Js
@@ -66,6 +67,8 @@ class Route():
         self.render_figure.set_param("centrale",centrale)
         self.render_figure.set_param("machinealaver",machinealaver)
         return self.render_some_json("welcome/machinealaver.json")
+    def createuser(self,search):
+        myparam=self.get_post_data()(params=("username","email","password","job",))
     def hello(self,search):
         try:
             print(search["myid"])
@@ -103,6 +106,7 @@ class Route():
             print("link route ",path)
             ROUTES={
 
+                    '^/welcome$': self.createuser,
                     '^/$': self.hello,
 
                     }
