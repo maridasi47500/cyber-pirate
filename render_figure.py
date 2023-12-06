@@ -1,6 +1,7 @@
 import re
 import os
 import traceback
+from fichier import Fichier
 import sys
 class RenderFigure():
     def __init__(self,program):
@@ -32,7 +33,7 @@ class RenderFigure():
                   continue
               k=j.split("%>")
               print("my session",self.session)
-              loc={"session": self.session,"render_collection": self.render_collection,"params": self.params}
+              loc={"Fichier": Fichier,"session": self.session,"render_collection": self.render_collection,"params": self.params}
               for n in self.params:
                   loc[n]=self.params[n]
 
@@ -58,7 +59,7 @@ class RenderFigure():
                     continue
 
                 k=j.split("%>")
-                loc={"paspremier":paspremier,as_: x,"index":i,  "params": self.params}
+                loc={"render_collection":self.render_collection,"paspremier":paspremier,as_: x,"index":i,  "params": self.params}
                 print(k[0], "content render")
                 l=exec("myvalue="+k[0], globals(), loc)
                 mystr+=str(loc["myvalue"])

@@ -1,15 +1,43 @@
 <button id="hi">me connecter/inscrire</button>
+<div class="hey">
+	<div class="left">
 <div hidden id="userid"></div>
 <h1>composer un message</h1>
+<form>
 <div class="field">
-<label>contenu de mon message</label>
+<label>email</label>
 <textarea></textarea>
 </div>
+<div class="field">
+<label>contenu de mon message</label>
+<textarea id="message_content" name="content"></textarea>
+</div>
+<div class="actions">
+	<input type="submit"/>
+</div>
+</form>
 <form>
 <div class="field">
 <label>ajouter une image</label>
 <input type="file" />
 </div>
+<div class="actions">
+	<input type="submit"/>
+</div>
 </form>
 <div id="photos">
+</div>
+<h5>Balises</h5>
+<table>
+	        <%=render_collection(collection=params['tags'], partial='welcome/_tagligne.html', as_='tag')%>
+
+</table>
+<h5>css proprietes</h5>
+<table>
+	        <%=render_collection(collection=params['cssproprietes'], partial='welcome/_cssligne.html', as_='css')%>
+</table>
+</div>
+<div class="right">
+	<%=Fichier("./welcome","_mypostcard.html").lire()%>
+</div>
 </div>

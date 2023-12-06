@@ -43,3 +43,9 @@
 			  from {bottom: 30px; opacity: 1;}
 			    to {bottom: 0; opacity: 0;}
 		    }
+		    .right,.left{
+			    float:left;width:50%;
+		    }
+		    #message_content{
+			    min-height:400px;
+		    }

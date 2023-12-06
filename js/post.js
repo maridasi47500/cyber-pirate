@@ -26,9 +26,10 @@ return false;
 	    console.log(JSON.stringify(data.redirect))
 	    if (data.redirect){
 	    window.location=data.redirect;
-	    }else{
-	    window.location="/welcome";
 	    }
+},
+    error: function (data,error) {
+	    console.log(JSON.stringify(data))
 },
     xhr: function () {
       var myXhr = $.ajaxSettings.xhr();

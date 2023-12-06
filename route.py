@@ -1,7 +1,7 @@
 from directory import Directory
 from render_figure import RenderFigure
 from myscript import Myscript
-from mycommandline import Myscript
+from mycommandline import Mycommandline
 from user import User
 
 from mypic import Pic
@@ -16,9 +16,6 @@ class Route():
         self.Program=Directory("cyber pirate")
         self.Program.set_path("./")
         self.mysession={"notice":None,"email":None,"name":None}
-        self.dbCentrale=Centrale()
-        self.dbProgram=Program()
-        self.dbMachinealaver=Machinealaver()
         self.render_figure=RenderFigure(self.Program)
         self.getparams=("id",)
     def set_post_data(self,x):
@@ -70,6 +67,18 @@ class Route():
     def createuser(self,search):
         myparam=self.get_post_data()(params=("username","email","password","job",))
     def hello(self,search):
+        tags=[
+        ["div","html","footer"],
+        ["header","nav"]
+        ]
+        css=[
+        ["display","color","background"],
+        ["margin","padding"]
+        ]
+        print(tags)
+        self.render_figure.set_param("tags",tags)
+        self.render_figure.set_param("cssproprietes",css)
+        print("tags")
         try:
             print(search["myid"])
             myid=search["myid"][0]
