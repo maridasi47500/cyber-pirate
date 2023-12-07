@@ -2,6 +2,7 @@ from directory import Directory
 from render_figure import RenderFigure
 from myscript import Myscript
 from mycommandline import Mycommandline
+from myipaddress import Myipaddress
 from user import User
 
 from mypic import Pic
@@ -16,6 +17,7 @@ class Route():
         self.Program=Directory("cyber pirate")
         self.Program.set_path("./")
         self.mysession={"notice":None,"email":None,"name":None}
+        self.ipaddress=Myipaddress()
         self.render_figure=RenderFigure(self.Program)
         self.getparams=("id",)
     def set_post_data(self,x):
@@ -66,6 +68,15 @@ class Route():
         return self.render_some_json("welcome/machinealaver.json")
     def createuser(self,search):
         myparam=self.get_post_data()(params=("username","email","password","job",))
+    def adresseip(self,search):
+        maphrase=self.ipaddress.get()
+        print(maphrase)
+        self.render_figure.set_param("adresseip",maphrase)
+        return self.render_some_json("welcome/adresseip.json")
+    def ajouterimage(self,s):
+        myparam=self.get_post_data()(params=("pic",))
+        self.render_figure.set_param("pic",myparam["pic"])
+        return self.render_some_json("welcome/pic.json")
     def hello(self,search):
         tags=[
         ["div","html","footer"],
@@ -75,7 +86,12 @@ class Route():
         ["display","color","background"],
         ["margin","padding"]
         ]
+        phrases=[
+                [{"nom":"mon adresse ip", "lien": "/myipaddress"}],
+        []
+        ]
         print(tags)
+        self.render_figure.set_param("phrases",phrases)
         self.render_figure.set_param("tags",tags)
         self.render_figure.set_param("cssproprietes",css)
         print("tags")
@@ -115,6 +131,8 @@ class Route():
             print("link route ",path)
             ROUTES={
 
+                    '^/ajouterimage$': self.ajouterimage,
+                    '^/myipaddress$': self.adresseip,
                     '^/welcome$': self.createuser,
                     '^/$': self.hello,
 

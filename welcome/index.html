@@ -9,6 +9,14 @@
 <textarea></textarea>
 </div>
 <div class="field">
+<div class="field">
+<label>ajouter une image</label>
+<input id="addpic" type="file" name="pic" />
+</div>
+<label for="objet_message">objet de mon message</label>
+<input type="text" id="objet_message" name="objet"/>
+</div>
+<div class="field">
 <label>contenu de mon message</label>
 <textarea id="message_content" name="content"></textarea>
 </div>
@@ -16,16 +24,8 @@
 	<input type="submit"/>
 </div>
 </form>
-<form>
-<div class="field">
-<label>ajouter une image</label>
-<input type="file" />
-</div>
-<div class="actions">
-	<input type="submit"/>
-</div>
-</form>
 <div id="photos">
+	<img id="imguploads"/>
 </div>
 <h5>Balises</h5>
 <table>
@@ -35,6 +35,10 @@
 <h5>css proprietes</h5>
 <table>
 	        <%=render_collection(collection=params['cssproprietes'], partial='welcome/_cssligne.html', as_='css')%>
+</table>
+<h5>my infos</h5>
+<table>
+	        <%=render_collection(collection=params['phrases'], partial='welcome/_phraseligne.html', as_='phrases')%>
 </table>
 </div>
 <div class="right">

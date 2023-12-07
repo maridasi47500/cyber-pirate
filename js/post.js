@@ -1,5 +1,17 @@
 $(function(){
 $('.carousel').carousel();
+	  function readFile() {
+		        if (this.files && this.files[0]) {
+				        var FR= new FileReader();
+				        FR.onload = function(e) {
+						          document.getElementById("mycardpic").src = e.target.result;
+
+						        };
+				        FR.readAsDataURL( this.files[0] );
+				      }
+		      }
+
+	    document.getElementById("addpic").addEventListener("change", readFile, false);
 
 $('form').on('submit', function () {
   if (window.filesize > 1024*5) {
